@@ -1,0 +1,88 @@
+.new-user-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    .new-user-content {
+        padding: 30px;
+        max-width: 1000px;
+        margin: 0 auto;
+        width: 100%;
+
+        .new-user-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        
+            h1 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #333;
+            }
+        }
+
+        .new-user-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+
+            .form-section {
+                margin-bottom: 30px;
+                padding-bottom: 30px;
+                border-bottom: 1px solid #eee;
+
+                &:last-child {
+                    margin-bottom: 0;
+                    padding-bottom: 0;
+                    border-bottom: 0;
+                }
+
+                h2 {
+                    font-size: 1.2rem;
+                    font-weight: 600;
+                    color: #333;
+                    margin-bottom: 20px;
+                }
+
+                h3 {
+                    font-size: 1.1rem;
+                    font-weight: 500;
+                    color: #444;
+                    margin-bottom: 15px;
+                }
+
+                .form-row {
+                    display: flex;
+                    gap: 20px;
+
+                    .form-group {
+                        flex: 1; //extend to fit width
+                    }
+                }
+
+                .form-group {
+                    margin-bottom: 20px;
+
+                    label {
+                        display: block;
+                        margin-bottom: 5px;
+                        font-weight: 500;
+                        color: #555;
+                    }
+
+                    input,
+                    select,
+                    textarea {
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 4px;
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+        }
+    }
+}
+
