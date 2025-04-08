@@ -5,27 +5,41 @@ import { createNewUserDocument } from '../../../utils/firebase/firebase.utils';
 
 import './new-user.styles.scss';
 
+const defaultFormDataFields = {
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    status: 'Active'
+}
+
+const defaultVehicleFields = {
+    make: '',
+    model: '',
+    year: '',
+    licensePlate: ''
+}
+
+const defaultSubscriptionFields = {
+    type: 'Basic',
+    renewalPeriod: 'Monthly'
+}
+
 const NewUser = () => {
 
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        status: 'Active'
-    });
+    const [formData, setFormData] = useState(defaultFormDataFields);
 
-    const [vehicle, setVehicle] = useState({
-        make: '',
-        model: '',
-        year: '',
-        licensePlate: ''
-    });
+    const [vehicle, setVehicle] = useState(defaultVehicleFields);
 
-    const [subscription, setSubscription] = useState({
-        type: 'Basic',
-        renewalPeriod: 'Monthly'
-    });
+    const [subscription, setSubscription] = useState(defaultSubscriptionFields);
+
+    const [isUserCreatedSuccess, setIsUserCreatedSuccess] = useState(false);
+
+    const resetFormFields = () => {
+        setFormData(defaultFormDataFields);
+        setVehicle(defaultVehicleFields);
+        setSubscription(defaultSubscriptionFields);
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -41,7 +55,8 @@ const NewUser = () => {
         
           try {
             await createNewUserDocument(userData);
-            console.log('User successfully created in Firestore');
+            setIsUserCreatedSuccess(true);
+            resetFormFields();
           } catch (error) {
             console.error('Error creating user:', error);
           }
@@ -242,6 +257,14 @@ const NewUser = () => {
                         Create User
                         </button>
                     </div>
+                    {isUserCreatedSuccess && (
+                        <>
+                            <div className="success-message">
+                                <span>User created successfully!</span>
+                            </div>
+                        </>
+                    )}
+                    
                 </form>
             </div>
         </div>

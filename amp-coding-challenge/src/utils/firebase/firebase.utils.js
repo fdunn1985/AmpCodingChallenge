@@ -10,9 +10,8 @@ import {
 
 import {
     getFirestore,
-    doc,
-    getDoc,
-    setDoc
+    collection,
+    addDoc
 } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -34,7 +33,7 @@ export const auth = getAuth();
 export const db = getFirestore();
 
 export const createNewUserDocument = async (userInformation) => {
-    const newUserDocRef = doc(db, 'users', 'csr-agent');
+    const newUserCollectionRef = collection(db, 'users');
 
     //TODO: may need to check if user exists...
 
@@ -44,10 +43,9 @@ export const createNewUserDocument = async (userInformation) => {
     }
 
     try {
-        await setDoc(newUserDocRef, userData)
+        const docRef = await addDoc(newUserCollectionRef, userData)
+        return docRef;
     } catch (error) {
         console.log('error creating new user', error.message);
     }
-
-    return newUserDocRef;
 }
