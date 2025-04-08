@@ -9,9 +9,22 @@ const Navigation = () => {
     return (
         <Fragment>
             <div className="navigation">
-                <Link className="logo-container" to="/">
-                    <AmpLogo className='logo' />
-                </Link>
+                <div className="navbar-logo">
+                    <Link to="/dashboard">
+                        <AmpLogo className='logo' />
+                    </Link>
+                </div>
+                <div className="navbar-menu">
+                    <Link to="/dashboard" className="nav-item">Dashboard</Link>
+                    <Link to="/users" className="nav-item">Users</Link>
+                    <Link to="/subscriptions" className="nav-item">Subscriptions</Link>
+                    <Link to="/reports" className="nav-item">Reports</Link>
+                </div>
+                <div className="navbar-user">
+                    <div className="user-info">
+                        <span className="user-name">CSR Agent</span>
+                    </div>
+                </div>
             </div>
             <Outlet />
         </Fragment>

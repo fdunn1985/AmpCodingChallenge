@@ -10,6 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigation />}>
           <Route index element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </div>
