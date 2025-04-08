@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { createNewUserDocument } from '../../../utils/firebase/firebase.utils';
 
@@ -29,11 +30,13 @@ const NewUser = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        const genId = uuidv4();
+
         const userData = {
             ...formData,
             vehicle: [vehicle],
             subscription,
-            id: 'csr-agent'
+            id: genId
           };
         
           try {
