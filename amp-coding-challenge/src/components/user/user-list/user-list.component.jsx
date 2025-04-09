@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { fetchAllUsers } from '../../utils/firebase/firebase.utils';
+import { fetchAllUsers } from '../../../utils/firebase/firebase.utils';
 
 import './user-list.styles.scss';
 

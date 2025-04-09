@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { createNewUserDocument } from '../../utils/firebase/firebase.utils';
+import { createNewUserDocument } from '../../../utils/firebase/firebase.utils';
 
 import './new-user.styles.scss';
 

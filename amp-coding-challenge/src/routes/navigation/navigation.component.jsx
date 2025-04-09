@@ -38,7 +38,7 @@ const Navigation = () => {
                 </div>
                 <div className="navbar-user">
                     <div className="user-info">
-                        <span className="user-name">CSR Agent</span>
+                        <span className="user-name">Freddie Dunn (Agent)</span>
                     </div>
                 </div>
             </div>
