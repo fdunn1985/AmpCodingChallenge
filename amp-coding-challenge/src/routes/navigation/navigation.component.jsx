@@ -16,7 +16,7 @@ const Navigation = () => {
                 </div>
                 <div className="navbar-menu">
                     <Link to="/dashboard" className="nav-item">Dashboard</Link>
-                    <Link to="/users" className="nav-item">Users</Link>
+                    <Link to="/userList" className="nav-item">Users</Link>
                     <Link to="/subscriptions" className="nav-item">Subscriptions</Link>
                     <Link to="/reports" className="nav-item">Reports</Link>
                 </div>
@@ -29,5 +29,6 @@ const Navigation = () => {
             <Outlet />
         </Fragment>
     )
-}
+};
+
 export default Navigation;

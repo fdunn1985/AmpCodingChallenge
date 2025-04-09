@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { Vehicle } from './vehicle.model';
 
 export interface User {
@@ -6,6 +7,7 @@ export interface User {
     email: string;
     address?: string;
     status: 'Active' | 'Pending' | 'Inactive';
+    registrationDate: Date | Timestamp;
 
     vehicle: Vehicle[];
     subscription: {

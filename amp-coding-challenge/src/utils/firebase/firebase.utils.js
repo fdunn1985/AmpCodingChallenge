@@ -11,7 +11,8 @@ import {
 import {
     getFirestore,
     collection,
-    addDoc
+    addDoc,
+    getDocs
 } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -48,4 +49,22 @@ export const createNewUserDocument = async (userInformation) => {
     } catch (error) {
         console.log('error creating new user', error.message);
     }
-}
+};
+
+export const fetchAllUsers = async() => {
+    try {
+        const usersCollectionRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersCollectionRef);
+
+        /** @type {User[]} */
+        const users = querySnapshot.docs.map(doc => ({
+            ...doc.data()
+        }));
+
+        console.log(users);
+        return users;
+    } catch (error) {
+        console.error('Error fetching users: ', error);
+        return [];
+    }
+};

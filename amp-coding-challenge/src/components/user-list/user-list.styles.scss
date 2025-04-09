@@ -1,0 +1,106 @@
+.user-list-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    .user-list-content {
+        padding: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+
+        .user-list-header {
+            margin-bottom: 30px;
+
+            h1 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: #333333;
+                margin-bottom: 20px;
+            }
+
+            .search-and-filters {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+
+                .search-form {
+                    display: flex;
+                    gap: 10px;
+
+                    input {
+                        flex: 1;
+                        padding: 10px;
+                        border: 1px solid #dddddd;
+                        border-radius: 4px;
+                        font-size: 0.9rem;
+                    }
+
+                    button {
+                        padding: 10px 20px;
+                        background-color: #0066cc;
+                        color: white;
+                        border: none;
+                        border-radius: 4px;
+                        font-weight: 500;
+
+                        &:hover {
+                            background-color: #0055aa;
+                        }
+                    }
+                }
+
+                .filters {
+                    display: flex;
+                    gap: 20px;
+                    flex-wrap: wrap;
+
+                    .filter {
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+                        label {
+                            font-weight: 500;
+                            color: #555555;
+                        }
+
+                        select {
+                            padding: 8px;
+                            border: 1px solid #dddddd;
+                            border-radius: 4px;
+                            font-size: 0.9rem;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .user-table-container {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0, 0.1);
+        overflow-x: auto;
+
+        .user-table {
+            width: 100%;
+            
+            tr:hover {
+                background-color: #c7c7c7;
+            }
+
+            th {
+                text-align: left;
+                padding: 15px;
+                color: #666667;
+                background-color: #f9f9f9;
+            }
+
+            td {
+                text-align: left;
+                padding: 15px;
+            }
+        }
+    }
+}
