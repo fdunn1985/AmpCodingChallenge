@@ -9,6 +9,17 @@
     position: sticky;
     top: 0;
     z-index: 1000;
+
+    // Make padding responsive
+    @media (max-width: 768px) {
+        padding: 0 10px;
+    }
+    
+    // On very small screens, adjust height and stack items if needed
+    @media (max-width: 480px) {
+        height: auto;
+        padding: 10px;
+    }
   
     .navbar-logo {
         height: 100%;
@@ -18,12 +29,41 @@
             height: 100%;
             width: auto;
             display: block;
+
+            // Make logo smaller on mobile
+            @media (max-width: 768px) {
+                height: 30px;
+                margin: auto 0;
+            }
         }
     }
 
     .navbar-menu {
         display: flex;
         gap: 10px;
+
+        // On smaller screens, reduce the gap between links
+        @media (max-width: 768px) {
+            gap: 5px;
+        }
+        
+        // For very small screens, convert to menu button with dropdown
+        @media (max-width: 480px) {
+            display: none; // Hide by default
+            
+            &.open {
+            display: flex;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            flex-direction: column;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            gap: 0;
+            }
+        }
 
         .nav-item {
             padding: 8px 15px;
@@ -32,6 +72,28 @@
             font-weight: 500;
             text-decoration: none;
             transition: background-color 0.2s;
+
+            &:hover {
+                background-color: #f0f2f5;
+                text-decoration: none;
+            }
+
+             // Make nav items smaller on tablets
+            @media (max-width: 768px) {
+                padding: 6px 10px;
+                font-size: 0.9rem;
+            }
+            
+            // Style nav items for mobile dropdown
+            @media (max-width: 480px) {
+                padding: 12px 20px;
+                border-radius: 0;
+                width: 100%;
+                
+                &:hover {
+                background-color: #f0f2f5;
+                }
+            }
         }
     }
 
@@ -46,7 +108,29 @@
             .user-name {
                 font-weight: 500;
                 color: #333;
+
+                // Hide username text on smaller screens
+                @media (max-width: 768px) {
+                    display: none;
+                }
             }
+        }
+    }
+
+    // Hamburger menu for mobile
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: #555555;
+        cursor: pointer;
+        margin-left: auto;
+        
+        @media (max-width: 480px) {
+            display: block;
+            position: absolute;
+            right: 20px;
         }
     }
 }

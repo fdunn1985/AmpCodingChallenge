@@ -154,7 +154,7 @@ const NewUser = () => {
                                 onChange={handleInputChange}
                             >
                                 <option value="Active">Active</option>
-                                <option value="Pending">Pending</option>
+                                <option value="Overdue">Overdue</option>
                                 <option value="Inactive">Inactive</option>
                             </select>
                         </div>

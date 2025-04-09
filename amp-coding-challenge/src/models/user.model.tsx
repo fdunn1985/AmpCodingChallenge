@@ -6,7 +6,7 @@ export interface User {
     name: string;
     email: string;
     address?: string;
-    status: 'Active' | 'Pending' | 'Inactive';
+    status: 'Active' | 'Overdue' | 'Inactive';
     registrationDate: Date | Timestamp;
 
     vehicle: Vehicle[];
