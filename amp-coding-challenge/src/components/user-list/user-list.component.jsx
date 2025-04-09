@@ -5,55 +5,6 @@ import { fetchAllUsers } from '../../utils/firebase/firebase.utils';
 
 import './user-list.styles.scss';
 
-// Mock user data
-const mockUsers = [
-    {
-      id: 1,
-      name: 'John Smith',
-      email: 'john.smith@example.com',
-      phone: '(555) 123-4567',
-      status: 'Active',
-      subscriptionType: 'Premium',
-      registrationDate: '2023-01-15'
-    },
-    {
-      id: 2,
-      name: 'Emily Johnson',
-      email: 'emily.johnson@example.com',
-      phone: '(555) 234-5678',
-      status: 'Active',
-      subscriptionType: 'Basic',
-      registrationDate: '2023-02-22'
-    },
-    {
-      id: 3,
-      name: 'Michael Brown',
-      email: 'michael.brown@example.com',
-      phone: '(555) 345-6789',
-      status: 'Cancelled',
-      subscriptionType: 'Premium',
-      registrationDate: '2022-11-05'
-    },
-    {
-      id: 4,
-      name: 'Sarah Wilson',
-      email: 'sarah.wilson@example.com',
-      phone: '(555) 456-7890',
-      status: 'Overdue',
-      subscriptionType: 'Premium',
-      registrationDate: '2023-03-10'
-    },
-    {
-      id: 5,
-      name: 'David Taylor',
-      email: 'david.taylor@example.com',
-      phone: '(555) 567-8901',
-      status: 'Active',
-      subscriptionType: 'Basic',
-      registrationDate: '2022-12-18'
-    },
-];
-
 const FetchUsers = async () => {
     try {
         return await fetchAllUsers();
@@ -82,6 +33,9 @@ const UserList = () => {
     const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
     const [statusFilter, setStatusFilter] = useState('All');
     const [subscriptionFilter, setSubscriptionFilter] = useState('All');
+
+    // adding the capability to sort the table
+    const [sortOrder, setSortOrder] = useState('asc');
 
     // fetch users
     useEffect(() => {
@@ -114,11 +68,25 @@ const UserList = () => {
             filteredUsers = filteredUsers.filter(user => user.subscription.type === subscriptionFilter);
         }
 
+        filteredUsers.sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+        
+            if (nameA < nameB) return sortOrder === 'asc' ? -1 : 1;
+            if (nameA > nameB) return sortOrder === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
         setUsers(filteredUsers);
-    }, [searchQuery, statusFilter, subscriptionFilter]);
+    }, [searchQuery, statusFilter, subscriptionFilter, sortOrder]);
 
     const handleSearch = (event) => {
         event.preventDefault();
+    }
+
+    const handleSortByName = () => {
+        const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+        setSortOrder(newOrder);
     }
 
     return (
@@ -166,7 +134,9 @@ const UserList = () => {
                 <table className="user-table">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th onClick={() => handleSortByName()}>
+                                Name {sortOrder === 'asc' ? '↑' : '↓'}
+                            </th>
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Status</th>
