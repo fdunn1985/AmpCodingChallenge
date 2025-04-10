@@ -68,3 +68,22 @@ export const fetchAllUsers = async() => {
         return [];
     }
 };
+
+export const fetchUserById = async(userId) => {
+    try {
+        const usersCollectionRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersCollectionRef);
+
+        /** @type {User[]} */
+        const users = querySnapshot.docs.map(doc => ({
+            ...doc.data()
+        }));
+
+        const targetUser = users.find(user => user.id === userId);
+        return targetUser;
+         
+    } catch (error) {
+        console.error('Error fetching user: ', error);
+        return [];
+    }
+}

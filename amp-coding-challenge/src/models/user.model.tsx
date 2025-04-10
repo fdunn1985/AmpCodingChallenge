@@ -10,6 +10,6 @@ export interface User {
     status: 'Active' | 'Overdue' | 'Inactive';
     registrationDate: Date | Timestamp;
 
-    vehicle: Vehicle[];
-    purchaseHistory: PurchaseHistory;
+    vehicles: Vehicle[];
+    purchaseHistory: PurchaseHistory[];
 }

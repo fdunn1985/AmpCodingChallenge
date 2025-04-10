@@ -343,6 +343,22 @@
                         margin-bottom: 5px;
                     }
                 }
+
+                .status-text {
+                    font-weight: 500;
+                    
+                    &.active {
+                      color: #0c6b58;
+                    }
+                    
+                    &.overdue {
+                      color: #d32f2f;
+                    }
+                    
+                    &.cancelled {
+                      color: #757575;
+                    }
+                }
             }
         }
 

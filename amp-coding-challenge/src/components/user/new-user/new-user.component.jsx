@@ -59,6 +59,26 @@ const NewUser = () => {
         setSubscription(defaultSubscriptionFields);
     }
 
+    const getRenewalDate = (startDate, renewalPeriod) => {
+        const date = new Date(startDate);
+
+        switch (renewalPeriod) {
+            case 'Monthly':
+                date.setMonth(date.getMonth() + 1);
+                break;
+            case 'Quarterly':
+                date.setMonth(date.getMonth() + 3);
+                break;
+            case 'Annually':
+                date.setFullYear(date.getFullYear() + 1);
+                break;
+            default:
+                throw new Error(`Unknown renewal period: ${renewalPeriod}`);
+        }
+
+        return date;
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -66,9 +86,11 @@ const NewUser = () => {
         const purchaseId = uuidv4();
         const vehicleId = uuidv4();
 
+        const currentDate = new Date();
+
         const purchaseHistory = {
             id: purchaseId,
-            date: new Date(),
+            date: currentDate,
             type: 'Subscription',
             description: `${subscription.type} ${subscription.renewalPeriod} Subscription`,
             amount: subscriptionPrices[subscription.type][subscription.renewalPeriod],
@@ -77,15 +99,21 @@ const NewUser = () => {
 
         const userData = {
             ...formData,
-            vehicle: [
+            vehicles: [
                 {
                     ...vehicle,
                     id: vehicleId,
-                    subscription: subscription
+                    subscription: {
+                        ...subscription,
+                        startDate: currentDate,
+                        renewalDate: getRenewalDate(currentDate, subscription.renewalPeriod),
+                        renewalPrice: subscriptionPrices[subscription.type][subscription.renewalPeriod],
+                        status: 'Active'
+                    }
                 }],
             id: userId,
-            registrationDate: new Date(),
-            purchaseHistory: purchaseHistory
+            registrationDate: currentDate,
+            purchaseHistory: [purchaseHistory]
         };
         
         try {

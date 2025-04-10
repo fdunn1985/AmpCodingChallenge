@@ -157,7 +157,7 @@ const UserList = () => {
                                             {user.status}
                                         </span>
                                     </td>
-                                    <td data-label="Subscription">{user.vehicle[0].subscription?.type}</td>
+                                    <td data-label="Subscription">{user.vehicles?.[0].subscription?.type}</td>
                                     <td data-label="Registration Date">{user.registrationDate.toDate().toLocaleString()}</td>
                                     <td data-label="Actions">
                                         <Link to={`/userDetail/${user.id}`} className="view-button">

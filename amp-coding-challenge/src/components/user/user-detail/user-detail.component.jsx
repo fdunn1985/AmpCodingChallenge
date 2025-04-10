@@ -1,210 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+
+import { fetchUserById } from '../../../utils/firebase/firebase.utils';
+
 import './user-detail.styles.scss';
 
-const mockUserDetails = {
-    1: {
-      id: 1,
-      name: 'John Smith',
-      email: 'john.smith@example.com',
-      phone: '(555) 123-4567',
-      address: '123 Main St, Anytown, USA',
-      status: 'Active',
-      registrationDate: '2023-01-15',
-      vehicles: [
-        {
-          id: 101,
-          make: 'Toyota',
-          model: 'Camry',
-          year: '2020',
-          licensePlate: 'ABC123',
-          subscription: {
-            id: 201,
-            type: 'Premium',
-            status: 'Active',
-            startDate: '2023-01-15',
-            renewalDate: '2023-02-15',
-            price: 29.99
-          }
-        }
-      ],
-      purchaseHistory: [
-        {
-          id: 301,
-          date: '2023-01-15',
-          type: 'Subscription',
-          description: 'Premium Monthly Subscription',
-          amount: 29.99,
-          status: 'Active'
-        },
-        {
-          id: 302,
-          date: '2023-02-15',
-          type: 'Renewal',
-          description: 'Premium Monthly Subscription Renewal',
-          amount: 29.99,
-          status: 'Completed'
-        },
-        {
-          id: 303,
-          date: '2023-03-05',
-          type: 'Single Wash',
-          description: 'Premium Wash - One Time',
-          amount: 12.99,
-          status: 'Completed'
-        }
-      ]
-    },
-    2: {
-      id: 2,
-      name: 'Emily Johnson',
-      email: 'emily.johnson@example.com',
-      phone: '(555) 234-5678',
-      address: '456 Oak Ave, Somewhere, USA',
-      status: 'Active',
-      registrationDate: '2023-02-22',
-      vehicles: [
-        {
-          id: 102,
-          make: 'Honda',
-          model: 'Civic',
-          year: '2021',
-          licensePlate: 'XYZ789',
-          subscription: {
-            id: 202,
-            type: 'Basic',
-            status: 'Active',
-            startDate: '2023-02-22',
-            renewalDate: '2023-03-22',
-            price: 19.99
-          }
-        }
-      ],
-      purchaseHistory: [
-        {
-          id: 304,
-          date: '2023-02-22',
-          type: 'Subscription',
-          description: 'Basic Monthly Subscription',
-          amount: 19.99,
-          status: 'Overdue'
-        },
-        {
-          id: 305,
-          date: '2023-03-22',
-          type: 'Renewal',
-          description: 'Basic Monthly Subscription Renewal',
-          amount: 19.99,
-          status: 'Completed'
-        }
-      ]
-    },
-    // Add more mock user details as needed
-    3: {
-      id: 3,
-      name: 'Michael Brown',
-      email: 'michael.brown@example.com',
-      phone: '(555) 345-6789',
-      address: '789 Pine St, Elsewhere, USA',
-      status: 'Cancelled',
-      registrationDate: '2022-11-05',
-      vehicles: [
-        {
-          id: 103,
-          make: 'Ford',
-          model: 'Mustang',
-          year: '2019',
-          licensePlate: 'DEF456',
-          subscription: {
-            id: 203,
-            type: 'Premium',
-            status: 'Cancelled',
-            startDate: '2022-11-05',
-            renewalDate: '2023-04-05',
-            price: 29.99
-          }
-        }
-      ],
-      purchaseHistory: [
-        {
-          id: 306,
-          date: '2022-11-05',
-          type: 'Subscription',
-          description: 'Premium Monthly Subscription',
-          amount: 29.99,
-          status: 'Completed'
-        },
-        {
-          id: 307,
-          date: '2022-12-05',
-          type: 'Renewal',
-          description: 'Premium Monthly Subscription Renewal',
-          amount: 29.99,
-          status: 'Completed'
-        },
-        {
-          id: 308,
-          date: '2023-01-05',
-          type: 'Renewal',
-          description: 'Premium Monthly Subscription Renewal',
-          amount: 29.99,
-          status: 'Completed'
-        },
-        {
-          id: 309,
-          date: '2023-02-05',
-          type: 'Cancellation',
-          description: 'Premium Monthly Subscription Cancellation',
-          amount: 0,
-          status: 'Completed'
-        }
-      ]
-    },
-    4: {
-      id: 4,
-      name: 'Sarah Wilson',
-      email: 'sarah.wilson@example.com',
-      phone: '(555) 456-7890',
-      address: '321 Cedar Rd, Nowhere, USA',
-      status: 'Overdue',
-      registrationDate: '2023-03-10',
-      vehicles: [
-        {
-          id: 104,
-          make: 'Chevrolet',
-          model: 'Malibu',
-          year: '2022',
-          licensePlate: 'GHI789',
-          subscription: {
-            id: 204,
-            type: 'Premium',
-            status: 'Overdue',
-            startDate: '2023-03-10',
-            renewalDate: '2023-04-10',
-            price: 29.99
-          }
-        }
-      ],
-      purchaseHistory: [
-        {
-          id: 310,
-          date: '2023-03-10',
-          type: 'Subscription',
-          description: 'Premium Monthly Subscription',
-          amount: 29.99,
-          status: 'Completed'
-        },
-        {
-          id: 311,
-          date: '2023-04-10',
-          type: 'Renewal',
-          description: 'Premium Monthly Subscription Renewal',
-          amount: 29.99,
-          status: 'Failed'
-        }
-      ]
-    }
-  };
 
 const UserDetail = () => {
     const { userId } = useParams();
@@ -215,14 +15,18 @@ const UserDetail = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState('profile');
 
-    useEffect(() => {
+    useEffect( () => {
         // using mock for now, replace with real firebase data.
-        const userDetail = mockUserDetails[userId];
+        const fetchUser = async () => {
+            const userDetail = await fetchUserById(userId);
 
-        if (userDetail) {
-            setUser(userDetail);
-            setEditedUser(userDetail);
+            if (userDetail) {
+                setUser(userDetail);
+                setEditedUser(userDetail);
+            }
         }
+        
+        fetchUser();
     }, [userId]);
 
     const handleEditToggle = () => {
@@ -404,7 +208,7 @@ const UserDetail = () => {
 
                                     <div className="form-group">
                                         <label>Registration Date:</label>
-                                        <span>{user.registrationDate}</span>
+                                        <span>{user.registrationDate?.toDate?.().toLocaleString()}</span>
                                     </div>
                                 </div>
                             </div>
@@ -450,21 +254,21 @@ const UserDetail = () => {
                                                 </div>
                                                 <div className="detail-item">
                                                     <label>Status:</label>
-                                                    <span className={`status-text ${vehicle.subscription.status.toLowerCase()}`}>
+                                                    <span className={`status-text ${vehicle.subscription?.status?.toLowerCase() || ''}`}>
                                                         {vehicle.subscription.status}
                                                     </span>
                                                 </div>
                                                 <div className="detail-item">
                                                     <label>Start Date:</label>
-                                                    <span>{vehicle.subscription.startDate}</span>
+                                                    <span>{vehicle.subscription?.startDate.toDate().toLocaleString() || ''}</span>
                                                 </div>
                                                 <div className="detail-item">
                                                     <label>Renewal Date:</label>
-                                                    <span>{vehicle.subscription.renewalDate}</span>
+                                                    <span>{vehicle.subscription?.renewalDate.toDate().toLocaleString() || ''}</span>
                                                 </div>
                                                 <div className="detail-item">
                                                     <label>Renewal Price:</label>
-                                                    <span>${vehicle.subscription.price.toFixed(2)}</span>
+                                                    <span>${vehicle.subscription.renewalPrice.toFixed(2)}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -497,7 +301,7 @@ const UserDetail = () => {
                                 <tbody>
                                     {user.purchaseHistory.map(purchase => (
                                         <tr key={purchase.id}>
-                                            <td data-label="Date">{purchase.date}</td>
+                                            <td data-label="Date">{purchase.date.toDate().toLocaleString()}</td>
                                             <td data-label="Description">{purchase.description}</td>
                                             <td data-label="Type">{purchase.type}</td>
                                             <td data-label="Amount">{purchase.amount.toFixed(2)}</td>

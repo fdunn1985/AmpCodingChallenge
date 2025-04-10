@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 export interface Vehicle {
     id: string;
     make: string;
@@ -7,5 +9,9 @@ export interface Vehicle {
     subscription: {
         type: 'Basic' | 'Premium' | 'Ultimate';
         renewalPeriod: 'Monthly' | 'Quarterly' | 'Annually';
+        startDate: Date | Timestamp;
+        renewalDate: Date | Timestamp;
+        renewalPrice: string;
+        status: 'Active' | 'Overdue' | 'Cancelled'
     }
 }
