@@ -252,6 +252,19 @@ const UserDetail = () => {
         });
     };
 
+    const handleSendEmail = () => {
+        alert("Email opened in Outlook with customer template.");
+    };
+
+    const handleResetPassword = () => {
+        alert("Customer has been sent reset password information");
+    };
+
+    const handleCancelAccount = (event) => {
+        //TODO set customer account to inactive
+        alert("Setting customer account to inactive");
+    }
+
     if (!user) {
         return (
             <div className="user-detail-container">
@@ -399,17 +412,77 @@ const UserDetail = () => {
                             <div className="profile-actions">
                                 <h2>Quick Actions</h2>
                                 <div className="action-buttons">
-                                    <button className="action-button cancel-account">
+                                    <button className="action-button cancel-account" onClick={(event) => handleCancelAccount(event)}>
                                         Cancel Account
                                     </button>
-                                    <button className="action-button reset-password">
+                                    <button className="action-button reset-password" onClick={handleResetPassword}>
                                         Reset Password
                                     </button>
-                                    <button className="action-button send-email">
+                                    <button className="action-button send-email" onClick={handleSendEmail}>
                                         Send Email
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'vehicles' && (
+                        <div className="vehicles-tab">
+                            <div className="vehicle-section">
+                                <div className="section-header">
+                                    <h2>Vehicles & Subscriptions</h2>
+                                    <button className="add-vehicle-button">Add Vehicle</button>
+                                </div>
+
+                                {user.vehicles.map(vehicle => (
+                                    <div className="vehicle-card" key={vehicle.id}>
+                                        <div className="vehicle-info">
+                                            <h3>{vehicle.year} {vehicle.make} {vehicle.model}</h3>
+                                            <p>License Plate: {vehicle.licensePlate}</p>
+                                        </div>
+
+                                        <div className="subscription-info">
+                                            <h4>Subscription Details</h4>
+                                            <div className="subscription-details">
+                                                <div className="detail-item">
+                                                    <label>Type:</label>
+                                                    <span>{vehicle.subscription.type}</span>
+                                                </div>
+                                                <div className="detail-item">
+                                                    <label>Status:</label>
+                                                    <span className={`status-text ${vehicle.subscription.status.toLowerCase()}`}>
+                                                        {vehicle.subscription.status}
+                                                    </span>
+                                                </div>
+                                                <div className="detail-item">
+                                                    <label>Start Date:</label>
+                                                    <span>{vehicle.subscription.startDate}</span>
+                                                </div>
+                                                <div className="detail-item">
+                                                    <label>Renewal Date:</label>
+                                                    <span>{vehicle.subscription.renewalDate}</span>
+                                                </div>
+                                                <div className="detail-item">
+                                                    <label>Renewal Price:</label>
+                                                    <span>${vehicle.subscription.price.toFixed(2)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="vehicle-actions">
+                                            <button className="edit-vehicle-button">Edit Vehicle</button>
+                                            <button className="transfer-subscription-button">Transfer Subscription</button>
+                                            <button className="cancel-subscription-button">Cancel Subscription</button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === 'purchases' && (
+                        <div className="purchases-tab">
+                            <h2>Purchase History</h2>
                         </div>
                     )}
                 </div>

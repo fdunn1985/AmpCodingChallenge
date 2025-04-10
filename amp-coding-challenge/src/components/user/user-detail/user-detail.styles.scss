@@ -136,4 +136,257 @@
             }
         }
     }
+
+    .user-detail-body {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 30px;
+
+        @media (max-width: 768px) {
+            padding: 15px;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333333;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        // account profile styles
+        .profile-tab {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+
+            @media (max-width: 768px) {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .profile-section {
+            .profile-form {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+
+                @media (max-width: 768px) {
+                    grid-template-columns: 1fr;
+                }
+
+                .form-group {
+                    margin-bottom: 10px;
+
+                    label {
+                        display: block;
+                        margin-bottom: 5px;
+                        font-weight: 500;
+                        color: #555555;
+                    }
+
+                    span {
+                        display: block;
+                        padding: 8px 0;
+                    }
+
+                    input, select {
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #dddddd;
+                        border-radius: 4px;
+                        font-size: 0.9rem;
+                    }
+                }
+            }
+        }
+
+        .profile-actions {
+            .action-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+
+                .action-button {
+                    padding: 12px 15px;
+                    border-radius: 4px;
+                    font-weight: 500;
+                    text-align: center;
+                    cursor: pointer;
+
+                    &.cancel-account {
+                        background-color: #ffeaea;
+                        color: #d32f2f;
+                        border: 1px solid #ffcdd2;
+
+                        &:hover {
+                            background-color: #e0cdcd;
+                        }
+                    }
+
+                    &.reset-password {
+                        background-color: #e3f2fd;
+                        color: #1976d2;
+                        border: 1px solid #bbdefb;
+
+                        &:hover {
+                            background-color: #c5d2dc;
+                        }
+                    }
+
+                    &.send-email {
+                        background-color: #f0f0f0;
+                        color: #555555;
+                        border: 1px solid #dddddd;
+
+                        &:hover {
+                            background-color: #bebebe;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Vehicles tab styles
+    .vehicles-tab {
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+
+            @media (max-width: 768px) {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .add-vehicle-button {
+                padding: 8px 15px;
+                background-color: #0066cc;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                font-weight: 500;
+                cursor: pointer;
+
+                @media (max-width: 768px) {
+                    width: 100%;
+                }
+
+                &:hover {
+                    background-color: #0055aa;
+                }
+            }
+        }
+
+        .vehicle-card {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #eeeeee;
+
+            .vehicle-info {
+                margin-bottom: 20px;
+
+                h3 {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    color: #333333;
+                    margin-top: 0;
+                    margin-bottom: 10px;
+                }
+
+                p {
+                    color: #666677;
+                    margin: 0;
+                }
+            }
+        }
+
+        .subscription-info {
+            margin-bottom: 20px;
+            
+            h4 {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333333;
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
+
+            .subscription-details {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+
+                @media (max-width: 768px) {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                @media (max-width: 576px) {
+                    grid-template-columns: 1fr;
+                }
+
+                .detail-item {
+                    display: flex;
+                    flex-direction: column;
+
+                    label {
+                        font-weight: 500;
+                        color: #666677;
+                        font-size: 0.8rem;
+                        margin-bottom: 5px;
+                    }
+                }
+            }
+        }
+
+        .vehicle-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            @media (max-width: 768px) {
+                flex-direction: column;
+            }
+
+            button {
+                padding: 8px 15px;
+                border-radius: 4px;
+                font-weight: 500;
+                font-size: 0.8rem;
+                cursor: pointer;
+
+                @media (max-width: 768px) {
+                    width: 100%;
+                }
+            }
+
+            .edit-vehicle-button,
+            .transfer-subscription-button {
+                background-color: #0066cc;
+                color: white;
+                border: none;
+
+                &:hover {
+                    background-color: #0055aa;
+                }
+            }
+
+            .cancel-subscription-button {
+                background-color: #ffeaea;
+                color: #d32f2f;
+                border: 1px solid #ffcdd2;
+
+                &:hover {
+                    background-color: #e4d1d1;
+                }
+            }
+        }
+    }
 }
