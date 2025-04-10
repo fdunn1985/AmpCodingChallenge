@@ -483,6 +483,33 @@ const UserDetail = () => {
                     {activeTab === 'purchases' && (
                         <div className="purchases-tab">
                             <h2>Purchase History</h2>
+
+                            <table className="purchase-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {user.purchaseHistory.map(purchase => (
+                                        <tr key={purchase.id}>
+                                            <td data-label="Date">{purchase.date}</td>
+                                            <td data-label="Description">{purchase.description}</td>
+                                            <td data-label="Type">{purchase.type}</td>
+                                            <td data-label="Amount">{purchase.amount.toFixed(2)}</td>
+                                            <td data-label="Status">
+                                                <span className={`status-badge ${purchase.status.toLowerCase()}`}>
+                                                    {purchase.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     )}
                 </div>
