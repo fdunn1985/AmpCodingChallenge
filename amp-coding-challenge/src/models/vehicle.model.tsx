@@ -4,4 +4,8 @@ export interface Vehicle {
     model: string;
     year: string;
     licensePlate: string;
+    subscription: {
+        type: 'Basic' | 'Premium' | 'Ultimate';
+        renewalPeriod: 'Monthly' | 'Quarterly' | 'Annually';
+    }
 }

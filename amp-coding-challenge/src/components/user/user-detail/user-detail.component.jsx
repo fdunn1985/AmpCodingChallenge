@@ -35,7 +35,7 @@ const mockUserDetails = {
           type: 'Subscription',
           description: 'Premium Monthly Subscription',
           amount: 29.99,
-          status: 'Completed'
+          status: 'Active'
         },
         {
           id: 302,
@@ -87,7 +87,7 @@ const mockUserDetails = {
           type: 'Subscription',
           description: 'Basic Monthly Subscription',
           amount: 19.99,
-          status: 'Completed'
+          status: 'Overdue'
         },
         {
           id: 305,

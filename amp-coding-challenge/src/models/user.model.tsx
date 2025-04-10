@@ -1,5 +1,6 @@
 import { Timestamp } from 'firebase/firestore';
 import { Vehicle } from './vehicle.model';
+import { PurchaseHistory } from './purchase-history.model';
 
 export interface User {
     id: string;
@@ -10,8 +11,5 @@ export interface User {
     registrationDate: Date | Timestamp;
 
     vehicle: Vehicle[];
-    subscription: {
-        type: 'Basic' | 'Premium' | 'Ultimate';
-        renewalPeriod: 'Monthly' | 'Quarterly' | 'Annually';
-    }
+    purchaseHistory: PurchaseHistory;
 }

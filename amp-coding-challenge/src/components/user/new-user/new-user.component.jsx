@@ -25,6 +25,24 @@ const defaultSubscriptionFields = {
     renewalPeriod: 'Monthly'
 }
 
+const subscriptionPrices = {
+    Basic: {
+        Monthly: 9.99,
+        Quarterly: 27.99,
+        Annually: 99.99
+    },
+    Premium: {
+        Monthly: 14.99,
+        Quarterly: 42.99,
+        Annually: 149.99
+    },
+    Ultimate: {
+        Monthly: 19.99,
+        Quarterly: 57.99,
+        Annually: 199.99
+    },
+}
+
 const NewUser = () => {
 
     const [formData, setFormData] = useState(defaultFormDataFields);
@@ -44,23 +62,39 @@ const NewUser = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const genId = uuidv4();
+        const userId = uuidv4();
+        const purchaseId = uuidv4();
+        const vehicleId = uuidv4();
+
+        const purchaseHistory = {
+            id: purchaseId,
+            date: new Date(),
+            type: 'Subscription',
+            description: `${subscription.type} ${subscription.renewalPeriod} Subscription`,
+            amount: subscriptionPrices[subscription.type][subscription.renewalPeriod],
+            status: 'Active'
+        };
 
         const userData = {
             ...formData,
-            vehicle: [vehicle],
-            subscription,
-            id: genId,
-            registrationDate: new Date()
-          };
+            vehicle: [
+                {
+                    ...vehicle,
+                    id: vehicleId,
+                    subscription: subscription
+                }],
+            id: userId,
+            registrationDate: new Date(),
+            purchaseHistory: purchaseHistory
+        };
         
-          try {
+        try {
             await createNewUserDocument(userData);
             setIsUserCreatedSuccess(true);
             resetFormFields();
-          } catch (error) {
+        } catch (error) {
             console.error('Error creating user:', error);
-          }
+        }
     };
 
     const handleInputChange = (event) => {
