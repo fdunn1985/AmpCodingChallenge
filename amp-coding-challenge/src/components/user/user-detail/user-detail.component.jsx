@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { fetchUserById, updateUserDocument } from '../../../utils/firebase/firebase.utils';
+import { determineUserStatus } from '../../../utils/helpers/user-helpers.utils';
 
 import './user-detail.styles.scss';
 
@@ -55,9 +56,14 @@ const UserDetail = () => {
         const fetchUser = async () => {
             const userDetail = await fetchUserById(userId);
 
-            if (userDetail) {
-                setUser(userDetail);
-                setEditedUser(userDetail);
+            const userDetailUpdatedStatus = {
+                ...userDetail,
+                status: determineUserStatus(userDetail.vehicles)
+            }
+
+            if (userDetailUpdatedStatus) {
+                setUser(userDetailUpdatedStatus);
+                setEditedUser(userDetailUpdatedStatus);
             }
         }
         

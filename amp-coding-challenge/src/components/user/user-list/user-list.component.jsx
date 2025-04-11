@@ -2,6 +2,7 @@ import React, {useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { fetchAllUsers } from '../../../utils/firebase/firebase.utils';
+import { determineUserStatus } from '../../../utils/helpers/user-helpers.utils';
 
 import './user-list.styles.scss';
 
@@ -107,18 +108,6 @@ const UserList = () => {
     const handleSortByName = () => {
         const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
         setSortOrder(newOrder);
-    };
-
-    const determineUserStatus = (vehicles) => {
-        if (!vehicles || vehicles.length === 0) return 'Inactive';
-
-        const statuses = vehicles.map(veh => veh.subscription.status);
-
-        if (statuses.includes('Overdue')) return 'Overdue';
-        if (statuses.every(status => status === 'Active')) return 'Active';
-        if (statuses.every(status => status === 'Cancelled')) return 'Inactive'
-
-        return 'Active';
     };
 
     return (
