@@ -108,8 +108,8 @@ const Dashboard = () => {
                         </div>
                         <div className="quick-actions">
                             <Link to="/newUser" className="action-button">Create New User</Link>
-                            <Link to="usersPage" className="action-button">View All Users</Link>
-                            <Link to="overdueAccountsPage" className="action-button">View Overdue Accounts</Link>
+                            <Link to="/userList" className="action-button">View All Users</Link>
+                            <Link to="/userList?status=Overdue" className="action-button">View Overdue Accounts</Link>
                         </div>
                     </div>
                 </div>

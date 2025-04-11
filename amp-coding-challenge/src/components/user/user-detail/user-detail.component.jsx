@@ -442,7 +442,7 @@ const UserDetail = () => {
                                             </button>    
                                         </div>
 
-                                        <form onSubmit={handleAddVehicle} classNme="add-vehicle-form">
+                                        <form onSubmit={handleAddVehicle} className="add-vehicle-form">
                                             <div className="form-section">
                                                 <h3>Vehicle Information</h3>
                                                 <div className="form-row">

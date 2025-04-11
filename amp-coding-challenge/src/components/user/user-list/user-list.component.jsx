@@ -23,6 +23,7 @@ const UserList = () => {
 
     //parses the params from the url by search
     const queryParams = new URLSearchParams(location.search);
+    const statusParam = queryParams.get('status') || '';
     const initialSearchQuery = queryParams.get('search') || '';
 
     // rawUsers used to hold on to the initial list of users
@@ -41,8 +42,27 @@ const UserList = () => {
     useEffect(() => {
         const getUsers = async () => {
             const data = await FetchUsers();
-            setRawUsers(data);
-            setUsers(data);
+
+            const userUpdatedStatus = data.map(user => ({
+                ...user,
+                status: determineUserStatus(user.vehicles)
+            }))
+
+            setRawUsers(userUpdatedStatus);
+            setUsers(userUpdatedStatus);
+
+            // filter by params passed in for either user or status
+            const queryParams = new URLSearchParams(location.search);
+            const statusParam = queryParams.get('status') || '';
+            const searchParam = queryParams.get('search') || '';
+
+            if (statusParam) {
+                setStatusFilter(statusParam);
+            }
+    
+            if (searchParam) {
+                setSearchQuery(searchParam);
+            }
         }
 
         getUsers();
@@ -82,12 +102,24 @@ const UserList = () => {
 
     const handleSearch = (event) => {
         event.preventDefault();
-    }
+    };
 
     const handleSortByName = () => {
         const newOrder = sortOrder === 'asc' ? 'desc' : 'asc';
         setSortOrder(newOrder);
-    }
+    };
+
+    const determineUserStatus = (vehicles) => {
+        if (!vehicles || vehicles.length === 0) return 'Inactive';
+
+        const statuses = vehicles.map(veh => veh.subscription.status);
+
+        if (statuses.includes('Overdue')) return 'Overdue';
+        if (statuses.every(status => status === 'Active')) return 'Active';
+        if (statuses.every(status => status === 'Cancelled')) return 'Inactive'
+
+        return 'Active';
+    };
 
     return (
         <div className="user-list-container">
