@@ -104,6 +104,43 @@ const UserDetail = () => {
         alert("Setting customer account to inactive");
     };
 
+    const handleCancelSubscription = async (veh) => {
+
+        if (veh.subscription.status != 'Cancelled') {
+            const updatedVehicles = user.vehicles.map(vehicle => 
+                vehicle.id === veh.id ? {
+                    ...vehicle,
+                    subscription: {
+                        ...vehicle.subscription,
+                        status: 'Cancelled'
+                    }
+                } : vehicle
+            );
+    
+            const purchaseToAdd = {
+                id: uuidv4(),
+                date: new Date(),
+                type: 'Subscription',
+                description: `${veh.subscription.type} ${veh.subscription.renewalPeriod} Subscription`,
+                amount: subscriptionPrices[veh.subscription.type][veh.subscription.renewalPeriod],
+                status: 'Cancelled'
+            }
+    
+            const updatedUser = {
+                ...user,
+                vehicles: updatedVehicles,
+                purchaseHistory: [...user.purchaseHistory, purchaseToAdd]
+            };
+    
+            try {
+                await updateUserDocument(updatedUser);
+                setUser(updatedUser);
+            } catch (error) {
+                console.error("Failed to cancel subscription.", error);
+            }
+        }
+    };
+
     const getRenewalDate = (startDate, renewalPeriod) => {
         const date = new Date(startDate);
 
@@ -423,7 +460,7 @@ const UserDetail = () => {
                                         <div className="vehicle-actions">
                                             <button className="edit-vehicle-button">Edit Vehicle</button>
                                             <button className="transfer-subscription-button">Transfer Subscription</button>
-                                            <button className="cancel-subscription-button">Cancel Subscription</button>
+                                            <button className="cancel-subscription-button" onClick={() => handleCancelSubscription(vehicle)}>Cancel Subscription</button>
                                         </div>
                                     </div>
                                 ))}
@@ -527,7 +564,6 @@ const UserDetail = () => {
                                                         </select>
                                                     </div>
 
-                                                    {/* Make Price dynamic based on subscription */}
                                                     <div className="form-group">
                                                         <label htmlFor="subscription.renewalPrice">Subscription Price</label>
                                                         <input 
