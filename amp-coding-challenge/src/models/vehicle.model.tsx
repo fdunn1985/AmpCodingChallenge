@@ -12,6 +12,6 @@ export interface Vehicle {
         startDate: Date | Timestamp;
         renewalDate: Date | Timestamp;
         renewalPrice: number;
-        status: 'Active' | 'Overdue' | 'Cancelled'
+        status: 'Active' | 'Overdue' | 'Cancelled' | 'Transferred'
     }
 }

@@ -31,8 +31,21 @@ const UserDetail = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [activeTab, setActiveTab] = useState('profile');
 
+    // add vehicle variables
     const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
     const [newVehicle, setNewVehicle] = useState(defaultNewVehicle);
+
+    // transfer subscription variables
+    const [showTransferModal, setShowTransferModal] = useState(false);
+    const [selectedVehicle, setSelectedVehicle] = useState(null);
+    const [transferOption, setTransferOption] = useState('existing');
+    const [destinationVehicle, setDestinationVehicle] = useState(null);
+    const [newVehicleForTransfer, setNewVehicleForTransfer] = useState({
+        make: '',
+        model: '',
+        year: '',
+        licensePlate: ''
+    });
 
     useEffect( () => {
         // using mock for now, replace with real firebase data.
@@ -118,7 +131,7 @@ const UserDetail = () => {
             const updatedUser = {
                 ...user,
                 vehicles: updatedVehicles,
-                purchaseHistory: [...user.purchaseHistory, purchaseToAdd]
+                purchaseHistory: [purchaseToAdd, ...user.purchaseHistory]
             };
     
             try {
@@ -163,11 +176,69 @@ const UserDetail = () => {
         const updatedUser = {
             ...user,
             vehicles: [...user.vehicles, vehicleToAdd],
-            purchaseHistory: [...user.purchaseHistory, purchaseToAdd]
+            purchaseHistory: [purchaseToAdd, ...user.purchaseHistory]
         };
 
         setUser(updatedUser);
         setShowAddVehicleModal(false);
+
+        try {
+            await updateUserDocument(updatedUser);
+        } catch (error) {
+            console.error("Failed to update user in Firestore", error);
+        }
+    };
+
+    const handleOpenTransferModal = (vehicle) => {
+        setSelectedVehicle(vehicle);
+        setShowTransferModal(true);
+    }
+
+    const handleTransferSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!destinationVehicle) {
+            alert("Please select a destination vehicle");
+            return;
+        }
+
+        const updatedUser = {...user};
+
+        const sourceVehicleIndex = updatedUser.vehicles.findIndex(v => v.id === selectedVehicle.id);
+
+        if (sourceVehicleIndex === -1) {
+            alert("Source vehicle not found");
+            return;
+        }
+
+        const destVehicleIndex = updatedUser.vehicles.findIndex(v => v.id == destinationVehicle.id);
+
+        if (destVehicleIndex === -1) {
+            alert("Destination vehicle not found");
+            return;
+        }
+
+        const subscription = { ...updatedUser.vehicles[sourceVehicleIndex].subscription };
+        updatedUser.vehicles[destVehicleIndex].subscription = subscription;
+        updatedUser.vehicles[sourceVehicleIndex].subscription.status = "Transferred";
+
+        const newPurchaseId = uuidv4();
+        const today = new Date();
+
+        updatedUser.purchaseHistory.unshift({
+            id: newPurchaseId,
+            date: today,
+            type: "Transfer",
+            description: `${subscription.type} Subscription Transfer`,
+            amount: 0,
+            status: "Completed"
+        });
+
+        setUser(updatedUser);
+
+        setShowTransferModal(false);
+        setSelectedVehicle(null);
+        setDestinationVehicle(null);
 
         try {
             await updateUserDocument(updatedUser);
@@ -428,7 +499,7 @@ const UserDetail = () => {
 
                                         <div className="vehicle-actions">
                                             <button className="edit-vehicle-button">Edit Vehicle</button>
-                                            <button className="transfer-subscription-button">Transfer Subscription</button>
+                                            <button className="transfer-subscription-button" onClick={() => handleOpenTransferModal(vehicle)}>Transfer Subscription</button>
                                             <button className="cancel-subscription-button" onClick={() => handleCancelSubscription(vehicle)}>Cancel Subscription</button>
                                         </div>
                                     </div>
@@ -559,6 +630,115 @@ const UserDetail = () => {
                                                 </button>
                                                 <button type="submit" className="submit-button">
                                                     Add Vehicle
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
+
+                            {showTransferModal && selectedVehicle && (
+                                <div className="modal-overlay">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h2>Transfer Subscription</h2>
+                                            <button 
+                                                className="close-button"
+                                                onClick={() => setShowTransferModal(false)}
+                                            >
+                                                    &times;
+                                            </button>
+                                        </div>
+
+                                        <form onSubmit={handleTransferSubmit} className="transfer-subscription-form">
+                                            <div className="form-section">
+                                                <h3>Source Vehicle</h3>
+                                                <div className="vehicle-info">
+                                                    <p><strong>{selectedVehicle.year} {selectedVehicle.make} {selectedVehicle.model}</strong></p>
+                                                    <p>License Plate: {selectedVehicle.licensePlate}</p>
+                                                    <p>
+                                                        Subscription: {selectedVehicle.subscription.type} - 
+                                                        <span className={`status-text ${selectedVehicle.subscription.status.toLowerCase()}`}>
+                                                            {selectedVehicle.subscription.status}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="form-section">
+                                                <h4>Select Destination Vehicle</h4>
+                                                {user.vehicles.filter(v => v.id !== selectedVehicle.id).length > 0 ? (
+                                                    <div className="vehicle-list">
+                                                        {user.vehicles
+                                                            .filter(v => v.id !== selectedVehicle.id)
+                                                            .map(vehicle => (
+                                                                <label 
+                                                                    key={vehicle.id}
+                                                                    className={`transfer-option ${destinationVehicle && destinationVehicle.id === vehicle.id ? 'selected' : ''}`}
+                                                                >
+                                                                    <input 
+                                                                        type="radio"
+                                                                        name="destinationVehicle"
+                                                                        checked={destinationVehicle && destinationVehicle.id === vehicle.id}
+                                                                        onChange={() => setDestinationVehicle(vehicle)}
+                                                                    />
+                                                                    <div>
+                                                                        <strong>{vehicle.year} {vehicle.make} {vehicle.model}</strong>
+                                                                        <p>License Plate: {vehicle.licensePlate}</p>
+                                                                        {vehicle.subscription && vehicle.subscription.status === 'Active' && (
+                                                                            <p className="warning-text">
+                                                                                Note: This vehicle already has an Active subscription that will be replaced.
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+                                                                </label>
+                                                            ))}
+                                                    </div>
+                                                ) : (
+                                                    <div className="no-vehicles-message">
+                                                        <p>No other vehicles available for transfer. Please add another vehicle first using the "Add Vehicle" button.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {destinationVehicle && (
+                                                <div className="form-section">
+                                                    <h3>Transfer Summary</h3>
+                                                    <p>
+                                                        <strong>Subscription:</strong> {selectedVehicle.subscription.type} ({selectedVehicle.subscription.renewalPrice})
+                                                    </p>
+                                                    <p>
+                                                        <strong>From:</strong> {selectedVehicle.year} {selectedVehicle.make} {selectedVehicle.model} ({selectedVehicle.licensePlate})
+                                                    </p>
+                                                    <p>
+                                                        <strong>To:</strong> {destinationVehicle.year} {destinationVehicle.make} {destinationVehicle.model} ({destinationVehicle.licensePlate})
+                                                    </p>
+                                                    
+                                                    {destinationVehicle.subscription && (
+                                                        <div className="warning-box">
+                                                            <p>
+                                                            <strong>Warning:</strong> This will replace the existing
+                                                            {destinationVehicle.subscription.type} subscription on the destination vehicle.
+                                                            </p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            <div className="form-actions">
+                                                <button 
+                                                    type="button"
+                                                    className="cancel-button"
+                                                    onClick={() => setShowTransferModal(false)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    type="submit"
+                                                    className="submit-button"
+                                                    disabled={!destinationVehicle || user.vehicles.filter(v => v.id != selectedVehicle.id).length === 0}
+                                                >
+                                                    Transfer Subscription
                                                 </button>
                                             </div>
                                         </form>

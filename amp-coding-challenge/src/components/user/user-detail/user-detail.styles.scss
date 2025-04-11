@@ -358,6 +358,10 @@
                     &.cancelled {
                       color: #757575;
                     }
+
+                    &.transferred {
+                        color: #4141f4;
+                    }
                 }
             }
         }
@@ -564,7 +568,7 @@
     }
 }
 
-.add-vehicle-form {
+.add-vehicle-form, .transfer-subscription-form {
     padding: 20px;
 
     .form-section {
@@ -648,4 +652,58 @@
             }
         }
     }
+}
+
+.transfer-options {
+    margin-bottom: 20px;
+}
+
+.transfer-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #f9f9f9;
+    }
+
+    &.selected {
+        border-color: #0066cc;
+        background-color: #e3f2fd;
+    }
+
+    input[type="radio"] {
+        margin: 0;
+    }
+}
+
+.vehicle-selection {
+    margin-top: 20px;
+
+    .no-vehicles-message {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 6px;
+        color: #666677;
+        font-style: italic;
+    }
+}
+
+.warning-text {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+.warning-box {
+    background-color: #fff8e1;
+    border: 1px solid #ffe082;
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-top: 10px;
 }
