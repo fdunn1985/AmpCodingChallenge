@@ -12,7 +12,9 @@ import {
     getFirestore,
     collection,
     addDoc,
-    getDocs
+    getDocs,
+    updateDoc,
+    doc
 } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
@@ -51,6 +53,25 @@ export const createNewUserDocument = async (userInformation) => {
     }
 };
 
+export const updateUserDocument = async (userInformation) => {
+    const foundDoc = await fetchUserDocumentById(userInformation.id);
+
+    if (!foundDoc) {
+        console.error('User document not found');
+        return;
+    }
+
+    const userDocRef = doc(db, 'users', foundDoc.docId);
+    try {
+        await updateDoc(userDocRef, {
+            ...userInformation
+        });
+        console.log('User successfully updated');
+    } catch (error) {
+        console.error('Error updating user: ', error);
+    }
+}
+
 export const fetchAllUsers = async() => {
     try {
         const usersCollectionRef = collection(db, 'users');
@@ -86,4 +107,20 @@ export const fetchUserById = async(userId) => {
         console.error('Error fetching user: ', error);
         return [];
     }
-}
+};
+
+export const fetchUserDocumentById = async (userId) => {
+    const usersCollectionRef = collection(db, 'users');
+    const querySnapshot = await getDocs(usersCollectionRef);
+
+    const foundDoc = querySnapshot.docs.find(doc => doc.data().id === userId);
+
+    if (foundDoc) {
+        return {
+            docId: foundDoc.id,       // Firestore doc ID
+            data: foundDoc.data()     // Actual user data
+        };
+    }
+
+    return null;
+};

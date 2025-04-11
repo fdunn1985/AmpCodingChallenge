@@ -11,7 +11,7 @@ export interface Vehicle {
         renewalPeriod: 'Monthly' | 'Quarterly' | 'Annually';
         startDate: Date | Timestamp;
         renewalDate: Date | Timestamp;
-        renewalPrice: string;
+        renewalPrice: number;
         status: 'Active' | 'Overdue' | 'Cancelled'
     }
 }
