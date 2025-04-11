@@ -35,20 +35,17 @@ const UserDetail = () => {
     const [showAddVehicleModal, setShowAddVehicleModal] = useState(false);
     const [newVehicle, setNewVehicle] = useState(defaultNewVehicle);
 
+    //edit vehicle variables
+    const [showEditVehicleModal, setShowEditVehicleModal] = useState(false);
+    const [vehicleToEdit, setVehicleToEdit] = useState(null);
+    const [editedVehicle, setEditedVehicle] = useState(null);
+
     // transfer subscription variables
     const [showTransferModal, setShowTransferModal] = useState(false);
     const [selectedVehicle, setSelectedVehicle] = useState(null);
-    const [transferOption, setTransferOption] = useState('existing');
     const [destinationVehicle, setDestinationVehicle] = useState(null);
-    const [newVehicleForTransfer, setNewVehicleForTransfer] = useState({
-        make: '',
-        model: '',
-        year: '',
-        licensePlate: ''
-    });
 
     useEffect( () => {
-        // using mock for now, replace with real firebase data.
         const fetchUser = async () => {
             const userDetail = await fetchUserById(userId);
 
@@ -66,17 +63,37 @@ const UserDetail = () => {
         fetchUser();
     }, [userId]);
 
-    const handleEditToggle = () => {
-        setIsEditing(!isEditing);
-
-        if (!isEditing) {
-            setEditedUser({...user});
+    // save method
+    const saveUserToDatabase = async(updatedUser, errorMessage="Failed to update user in database.") => {
+        try {
+            await updateUserDocument(updatedUser);
+            setUser(updatedUser);
+        } catch (error) {
+            console.error(errorMessage, error);
         }
+    }
+
+    // ===== HANDLERS =====
+    const handleEditToggle = () => {
+        setIsEditing(prev => {
+            const newEditingState = !prev;
+
+            if (newEditingState) {
+                setActiveTab('profile');
+                setEditedUser({...user});
+            }
+
+            return newEditingState;
+        });
+
+        
     };
 
     const handleSave = () => {
         setUser(editedUser);
         setIsEditing(false);
+        
+        saveUserToDatabase(editedUser);
     };
 
     const handleCancel = () => {
@@ -94,10 +111,12 @@ const UserDetail = () => {
     };
 
     const handleSendEmail = () => {
+        // not implementing for this demo
         alert("Email opened in Outlook with customer template.");
     };
 
     const handleResetPassword = () => {
+        // not implementing for this demo
         alert("Customer has been sent reset password information");
     };
 
@@ -106,7 +125,7 @@ const UserDetail = () => {
         alert("Setting customer account to inactive");
     };
 
-    const handleCancelSubscription = async (veh) => {
+    const handleCancelSubscription = (veh) => {
 
         if (veh.subscription.status != 'Cancelled') {
             const updatedVehicles = user.vehicles.map(vehicle => 
@@ -133,13 +152,8 @@ const UserDetail = () => {
                 vehicles: updatedVehicles,
                 purchaseHistory: [purchaseToAdd, ...user.purchaseHistory]
             };
-    
-            try {
-                await updateUserDocument(updatedUser);
-                setUser(updatedUser);
-            } catch (error) {
-                console.error("Failed to cancel subscription.", error);
-            }
+
+            saveUserToDatabase(updatedUser, "Failed to cancel subscription.");
         }
     };
 
@@ -182,11 +196,7 @@ const UserDetail = () => {
         setUser(updatedUser);
         setShowAddVehicleModal(false);
 
-        try {
-            await updateUserDocument(updatedUser);
-        } catch (error) {
-            console.error("Failed to update user in Firestore", error);
-        }
+        saveUserToDatabase(updatedUser);
     };
 
     const handleOpenTransferModal = (vehicle) => {
@@ -240,11 +250,56 @@ const UserDetail = () => {
         setSelectedVehicle(null);
         setDestinationVehicle(null);
 
-        try {
-            await updateUserDocument(updatedUser);
-        } catch (error) {
-            console.error("Failed to update user in Firestore", error);
+        saveUserToDatabase(updatedUser);
+    };
+
+    const handleOpenEditModal = (vehicle) => {
+        setVehicleToEdit(vehicle);
+        setEditedVehicle({...vehicle});
+        setShowEditVehicleModal(true);
+    };
+
+    const handleEditVehicleChange = (event) => {
+        const {name, value } = event.target;
+
+        if (name.startsWith('subscription.')) {
+            const subscriptionField = name.split('.')[1];
+            setEditedVehicle({
+                ...editedVehicle,
+                subscription: {
+                    ...editedVehicle.subscription,
+                    [subscriptionField]: subscriptionField === 'renewalPrice' ? parseFloat(value) : value
+                }
+            });
+        } else {
+            setEditedVehicle({
+                ...editedVehicle,
+                [name]: value
+            });
         }
+    };
+
+    const handleEditVehicleSubmit = (event) => {
+        event.preventDefault();
+
+        const updatedUser = {...user };
+
+        const vehicleIndex = updatedUser.vehicles.findIndex(v => v.id === vehicleToEdit.id);
+        
+        if (vehicleIndex === -1){
+            alert("Vehicle not found");
+            return;
+        }
+
+        updatedUser.vehicles[vehicleIndex] = editedVehicle;
+
+        setUser(updatedUser);
+
+        setShowEditVehicleModal(false);
+        setVehicleToEdit(null);
+        setEditedVehicle(null);
+
+        saveUserToDatabase(updatedUser);
     };
 
     const handleVehicleInputChange = (e) => {
@@ -277,6 +332,7 @@ const UserDetail = () => {
             });
         }
     };
+    // ===== END HANDLERS =====
 
     if (!user) {
         return (
@@ -498,7 +554,7 @@ const UserDetail = () => {
                                         </div>
 
                                         <div className="vehicle-actions">
-                                            <button className="edit-vehicle-button">Edit Vehicle</button>
+                                            <button className="edit-vehicle-button" onClick={() => handleOpenEditModal(vehicle)}>Edit Vehicle</button>
                                             <button className="transfer-subscription-button" onClick={() => handleOpenTransferModal(vehicle)}>Transfer Subscription</button>
                                             <button className="cancel-subscription-button" onClick={() => handleCancelSubscription(vehicle)}>Cancel Subscription</button>
                                         </div>
@@ -630,6 +686,140 @@ const UserDetail = () => {
                                                 </button>
                                                 <button type="submit" className="submit-button">
                                                     Add Vehicle
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            )}
+
+                            {showEditVehicleModal && vehicleToEdit && editedVehicle && (
+                                <div className="modal-overlay">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h2>Edit Vehicle</h2>
+                                            <button 
+                                                className="close-button"
+                                                onClick={() => setShowEditVehicleModal(false)}
+                                            >
+                                                &times;
+                                            </button>
+                                        </div>
+
+                                        <form onSubmit={handleEditVehicleSubmit} className="edit-vehicle-form">
+                                            <div className="form-section">
+                                                <h3>Vehicle Information</h3>
+                                                <div className="form-row">
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-make">Make *</label>
+                                                        <input 
+                                                            type="text"
+                                                            id="edit-make"
+                                                            name="make"
+                                                            value={editedVehicle.make}
+                                                            onChange={handleEditVehicleChange}
+                                                            required
+                                                        />
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-model">Model *</label>
+                                                        <input 
+                                                            type="text"
+                                                            id="edit-model"
+                                                            name="model"
+                                                            value={editedVehicle.model}
+                                                            onChange={handleEditVehicleChange}
+                                                            required
+                                                        />
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-year">Year *</label>
+                                                        <input 
+                                                            type="text"
+                                                            id="edit-year"
+                                                            name="year"
+                                                            value={editedVehicle.year}
+                                                            onChange={handleEditVehicleChange}
+                                                            required
+                                                        />
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-licensePlate">License Plate *</label>
+                                                        <input 
+                                                            type="text"
+                                                            id="edit-licensePlate"
+                                                            name="licensePlate"
+                                                            value={editedVehicle.licensePlate}
+                                                            onChange={handleEditVehicleChange}
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="form-section">
+                                                <h3>Subscription Information</h3>
+                                                <div className="form-row">
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-subscription-type">Subscription Type *</label>
+                                                        <select 
+                                                            id="edit-subscription-type"
+                                                            name="subscription.type"
+                                                            value={editedVehicle.subscription.type}
+                                                            onChange={handleEditVehicleChange}
+                                                        >
+                                                            <option value="Basic">Basic</option>
+                                                            <option value="Premium">Premium</option>
+                                                            <option value="Ultimate">Ultimate</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-subscription-status">Status *</label>
+                                                        <select 
+                                                            id="edit-subscription-status"
+                                                            name="subscription.status"
+                                                            value={editedVehicle.subscription.status}
+                                                            onChange={handleEditVehicleChange}
+                                                        >
+                                                            <option value="Active">Active</option>
+                                                            <option value="Overdue">Overdue</option>
+                                                            <option value="Transferred">Transferred</option>
+                                                            <option value="Cancelled">Cancelled</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div className="form-row">
+                                                    <div className="form-group">
+                                                        <label htmlFor="edit-subscription-price">Price *</label>
+                                                        <input 
+                                                            type="number"
+                                                            id="edit-subscription-price"
+                                                            name="subscription.price"
+                                                            value={editedVehicle.subscription.renewalPrice}
+                                                            onChange={handleEditVehicleChange}
+                                                            step="0.01"
+                                                            min="0"
+                                                            required
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="form-actions">
+                                                <button 
+                                                    type="button"
+                                                    className="cancel-button"
+                                                    onClick={() => setShowEditVehicleModal(false)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button type="submit" className="submit-button">
+                                                    Save Changes
                                                 </button>
                                             </div>
                                         </form>

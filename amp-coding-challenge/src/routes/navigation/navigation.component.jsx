@@ -33,7 +33,6 @@ const Navigation = () => {
                 <div className={`navbar-menu ${menuOpen ? 'open' : ''}`}>
                     <Link to="/dashboard" className="nav-item">Dashboard</Link>
                     <Link to="/userList" className="nav-item">Users</Link>
-                    <Link to="/subscriptions" className="nav-item">Subscriptions</Link>
                     <Link to="/reports" className="nav-item">Reports</Link>
                 </div>
                 <div className="navbar-user">
