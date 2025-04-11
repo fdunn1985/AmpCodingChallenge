@@ -9,3 +9,23 @@ export const determineUserStatus = (vehicles) => {
 
     return 'Active';
 };
+
+export const getRenewalDate = (startDate, renewalPeriod) => {
+    const date = new Date(startDate);
+
+    switch (renewalPeriod) {
+        case 'Monthly':
+            date.setMonth(date.getMonth() + 1);
+            break;
+        case 'Quarterly':
+            date.setMonth(date.getMonth() + 3);
+            break;
+        case 'Annually':
+            date.setFullYear(date.getFullYear() + 1);
+            break;
+        default:
+            throw new Error(`Unknown renewal period: ${renewalPeriod}`);
+    }
+
+    return date;
+}

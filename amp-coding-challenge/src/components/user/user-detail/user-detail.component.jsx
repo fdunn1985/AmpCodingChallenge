@@ -3,7 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import { fetchUserById, updateUserDocument } from '../../../utils/firebase/firebase.utils';
-import { determineUserStatus } from '../../../utils/helpers/user-helpers.utils';
+import { determineUserStatus, getRenewalDate } from '../../../utils/helpers/user-helpers.utils';
+import {subscriptionPrices } from '../../../utils/helpers/subscription.utils';
 
 import './user-detail.styles.scss';
 
@@ -16,27 +17,9 @@ const defaultNewVehicle = {
         type: 'Basic',
         status: 'Active',
         renewalPeriod: 'Monthly',
-        renewalPrice: 19.99
+        renewalPrice: 9.99
     }
 };
-
-const subscriptionPrices = {
-    Basic: {
-        Monthly: 9.99,
-        Quarterly: 27.99,
-        Annually: 99.99
-    },
-    Premium: {
-        Monthly: 14.99,
-        Quarterly: 42.99,
-        Annually: 149.99
-    },
-    Ultimate: {
-        Monthly: 19.99,
-        Quarterly: 57.99,
-        Annually: 199.99
-    },
-}
 
 
 const UserDetail = () => {
@@ -146,26 +129,6 @@ const UserDetail = () => {
             }
         }
     };
-
-    const getRenewalDate = (startDate, renewalPeriod) => {
-        const date = new Date(startDate);
-
-        switch (renewalPeriod) {
-            case 'Monthly':
-                date.setMonth(date.getMonth() + 1);
-                break;
-            case 'Quarterly':
-                date.setMonth(date.getMonth() + 3);
-                break;
-            case 'Annually':
-                date.setFullYear(date.getFullYear() + 1);
-                break;
-            default:
-                throw new Error(`Unknown renewal period: ${renewalPeriod}`);
-        }
-
-        return date;
-    }
 
     const handleAddVehicle = async (event) => {
         event.preventDefault();

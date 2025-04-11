@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { createNewUserDocument } from '../../../utils/firebase/firebase.utils';
+import { getRenewalDate } from '../../../utils/helpers/user-helpers.utils';
+import {subscriptionPrices } from '../../../utils/helpers/subscription.utils';
 
 import './new-user.styles.scss';
 
@@ -25,24 +27,6 @@ const defaultSubscriptionFields = {
     renewalPeriod: 'Monthly'
 }
 
-const subscriptionPrices = {
-    Basic: {
-        Monthly: 9.99,
-        Quarterly: 27.99,
-        Annually: 99.99
-    },
-    Premium: {
-        Monthly: 14.99,
-        Quarterly: 42.99,
-        Annually: 149.99
-    },
-    Ultimate: {
-        Monthly: 19.99,
-        Quarterly: 57.99,
-        Annually: 199.99
-    },
-}
-
 const NewUser = () => {
 
     const [formData, setFormData] = useState(defaultFormDataFields);
@@ -57,26 +41,6 @@ const NewUser = () => {
         setFormData(defaultFormDataFields);
         setVehicle(defaultVehicleFields);
         setSubscription(defaultSubscriptionFields);
-    }
-
-    const getRenewalDate = (startDate, renewalPeriod) => {
-        const date = new Date(startDate);
-
-        switch (renewalPeriod) {
-            case 'Monthly':
-                date.setMonth(date.getMonth() + 1);
-                break;
-            case 'Quarterly':
-                date.setMonth(date.getMonth() + 3);
-                break;
-            case 'Annually':
-                date.setFullYear(date.getFullYear() + 1);
-                break;
-            default:
-                throw new Error(`Unknown renewal period: ${renewalPeriod}`);
-        }
-
-        return date;
     }
 
     const handleSubmit = async (event) => {
