@@ -88,8 +88,6 @@ const UserDetail = () => {
 
             return newEditingState;
         });
-
-        
     };
 
     const handleSave = () => {
@@ -123,9 +121,35 @@ const UserDetail = () => {
         alert("Customer has been sent reset password information");
     };
 
-    const handleCancelAccount = (event) => {
-        //TODO set customer account to inactive
-        alert("Setting customer account to inactive");
+    const handleCancelAccount = () => {
+        const now = new Date();
+    
+        const cancellationPurchases = user.vehicles.map(veh => ({
+            id: uuidv4(),
+            date: now,
+            type: 'Subscription',
+            description: `${veh.subscription.type} ${veh.subscription.renewalPeriod} Subscription`,
+            amount: 0,
+            status: 'Cancelled'
+        }));
+    
+        const updatedVehicles = user.vehicles.map(veh => ({
+            ...veh,
+            subscription: {
+                ...veh.subscription,
+                status: 'Cancelled'
+            }
+        }));
+    
+        const updatedUser = {
+            ...user,
+            vehicles: updatedVehicles,
+            status: 'Inactive',
+            purchaseHistory: [...cancellationPurchases, ...user.purchaseHistory]
+        };
+    
+        setUser(updatedUser);
+        saveUserToDatabase(updatedUser);
     };
 
     const handleCancelSubscription = (veh) => {
