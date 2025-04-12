@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import StatsCard from '../stats-card/stats-card.component';
 
-import { fetchAllUsers } from '../../utils/firebase/firebase.utils';
+import { fetchAllUsers, fetchAllRecentActivities } from '../../utils/firebase/firebase.utils';
 
 import './dashboard.styles.scss';
 
@@ -14,6 +14,8 @@ const Dashboard = () => {
     const [activeCount, setActiveCount] = useState(0);
     const [overdueCount, setOverdueCount] = useState(0);
     const [recentCallCount, setRecentCallCount] = useState(0);
+    const [dbRecentActivities, setDbRecentActivities] = useState([]);
+    const [viewAllActivities, setViewAllActivities] = useState(false);
 
     const navigate = useNavigate();
 
@@ -46,50 +48,100 @@ const Dashboard = () => {
         try {
             return await fetchAllUsers();
         } catch (error) {
-            console.error('Error creating user:', error);
+            console.error('Error fetching users', error);
             return [];
         }
-    }
+    };
+
+    const FetchRecentActivities = async () => {
+        try {
+            return await fetchAllRecentActivities();
+        } catch (error) {
+            console.error('Error fetching activities', error);
+            return [];
+        }
+    };
+
+    const handleViewAllToggle = () => {
+        setViewAllActivities(!viewAllActivities);
+    };
+
+    useEffect( () => {
+        const fetchActivities = async () => {
+
+            const data = await FetchRecentActivities();
+        
+            const updatedTimeActivities = data.map(activity => {
+                const now = new Date();
+                const timestamp = activity.timestamp?.toDate?.() || new Date(activity.timestamp);
+                const timeDiff = now - timestamp;
+                const minutesDiff = Math.floor(timeDiff / 60000);
+
+                let timeAgo = '';
+                if (minutesDiff < 1) timeAgo = "Just now";
+                else if (minutesDiff < 60) timeAgo = `${minutesDiff} minute(s) ago`;
+                else {
+                    const hoursDiff = Math.floor(minutesDiff / 60);
+                    if (hoursDiff < 24) {
+                        timeAgo = `${hoursDiff} hour(s) ago`;
+                    } else {
+                        const daysDiff = Math.floor(hoursDiff / 24);
+                        timeAgo = `${daysDiff} day(s) ago`;
+                    }
+                }
+
+                console.log(activity);
+                return {
+                    ...activity,
+                    time: timeAgo,
+                };
+            })
+
+            setDbRecentActivities(updatedTimeActivities);
+        };
+
+        fetchActivities();
+    }, []);
 
     // fetch users
-        useEffect(() => {
-            const getUsers = async () => {
-                const data = await FetchUsers();
-    
-                const count = data.length;
-                setUserCount(count);
+    useEffect(() => {
+        const getUsers = async () => {
+            const data = await FetchUsers();
 
-                const activeUsers = data.filter(user => user.status === 'Active');
-                setActiveCount(activeUsers.length);
+            const count = data.length;
+            setUserCount(count);
 
-                const overdueUsers = data.filter(user => user.status === 'Overdue');
-                setOverdueCount(overdueUsers.length);
+            const activeUsers = data.filter(user => user.status === 'Active');
+            setActiveCount(activeUsers.length);
 
-                let callCount = 0;
-                const now = new Date();
-                const fourHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-                
-                data.forEach(user => {
-                    if (user.purchaseHistory.length != 0) {
-                        const hasRecentPurcahse = user.purchaseHistory.some(purchase => {
-                            const purchaseDate = purchase.date instanceof Date
-                                ? purchase.date
-                                : purchase.date?.toDate?.();
-                            
-                                return purchaseDate && purchaseDate >= fourHoursAgo;
-                        });
+            const overdueUsers = data.filter(user => user.status === 'Overdue');
+            setOverdueCount(overdueUsers.length);
 
-                        if (hasRecentPurcahse) {
-                            callCount++;
-                        }
+            let callCount = 0;
+            const now = new Date();
+            const fourHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+            
+            data.forEach(user => {
+                if (user.purchaseHistory.length !== 0) {
+                    const hasRecentPurcahse = user.purchaseHistory.some(purchase => {
+                        const purchaseDate = purchase.date instanceof Date
+                            ? purchase.date
+                            : purchase.date?.toDate?.();
+                        
+                            return purchaseDate && purchaseDate >= fourHoursAgo;
+                    });
+
+                    if (hasRecentPurcahse) {
+                        callCount++;
                     }
-                });
+                }
+            });
 
-                setRecentCallCount(callCount);
-            }
-    
-            getUsers();
-        }, []);
+            setRecentCallCount(callCount);
+        }
+
+        getUsers();
+    }, []);
     
 
     return (
@@ -123,7 +175,7 @@ const Dashboard = () => {
                     <div className="section">
                         <div className="section-header">
                             <h2>Recent Activities</h2>
-                            <Link to="/linkToActivities">View All</Link>
+                            <button className="view-button" onClick={(handleViewAllToggle)}>View All</button>
                         </div>
                         <div className="activities-list">
                             <table>
@@ -136,13 +188,13 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {recentActivities.map(activity => (
+                                    {(viewAllActivities ? dbRecentActivities : dbRecentActivities.slice(0,5)).map(activity => (
                                         <tr key={activity.id}>
                                             <td>{activity.action}</td>
-                                            <td>{activity.user}</td>
+                                            <td>{activity.userName}</td>
                                             <td>{activity.time}</td>
                                             <td>
-                                                <Link to="user detail page">View</Link>
+                                                <Link to={`/userDetail/${activity.userId}`}>View</Link>
                                             </td>
                                         </tr>
                                     ))}

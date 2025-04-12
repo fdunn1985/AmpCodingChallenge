@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import VehicleCard from '../../vehicle-card/vehicle-card.component';
 
-import { fetchUserById, updateUserDocument } from '../../../utils/firebase/firebase.utils';
+import { fetchUserById, updateUserDocument, createNewRecentActivityDocument } from '../../../utils/firebase/firebase.utils';
 import { determineUserStatus, getRenewalDate } from '../../../utils/helpers/user-helpers.utils';
 import {subscriptionPrices } from '../../../utils/helpers/subscription.utils';
 
@@ -147,9 +147,18 @@ const UserDetail = () => {
             status: 'Inactive',
             purchaseHistory: [...cancellationPurchases, ...user.purchaseHistory]
         };
+
+        const recentActivityData = {
+            id: uuidv4(),
+            userId: user.id,
+            userName: user.name,
+            timestamp: now,
+            action: "Cancelled Account"
+        };
     
         setUser(updatedUser);
         saveUserToDatabase(updatedUser);
+        createNewRecentActivityDocument(recentActivityData);
     };
 
     const handleCancelSubscription = (veh) => {
@@ -180,7 +189,16 @@ const UserDetail = () => {
                 purchaseHistory: [purchaseToAdd, ...user.purchaseHistory]
             };
 
+            const recentActivityData = {
+                id: uuidv4(),
+                userId: user.id,
+                userName: user.name,
+                timestamp: new Date(),
+                action: "Cancelled Subscription"
+            };
+
             saveUserToDatabase(updatedUser, "Failed to cancel subscription.");
+            createNewRecentActivityDocument(recentActivityData);
         }
     };
 
@@ -220,10 +238,19 @@ const UserDetail = () => {
             purchaseHistory: [purchaseToAdd, ...user.purchaseHistory]
         };
 
+        const recentActivityData = {
+            id: uuidv4(),
+            userId: user.id,
+            userName: user.name,
+            timestamp: new Date(),
+            action: "Added Vehicle"
+        };
+
         setUser(updatedUser);
         setShowAddVehicleModal(false);
 
         saveUserToDatabase(updatedUser);
+        createNewRecentActivityDocument(recentActivityData);
     };
 
     const handleOpenTransferModal = (vehicle) => {
@@ -271,6 +298,14 @@ const UserDetail = () => {
             status: "Completed"
         });
 
+        const recentActivityData = {
+            id: uuidv4(),
+            userId: user.id,
+            userName: user.name,
+            timestamp: new Date(),
+            action: "Transferred Subscription"
+        };
+
         setUser(updatedUser);
 
         setShowTransferModal(false);
@@ -278,6 +313,7 @@ const UserDetail = () => {
         setDestinationVehicle(null);
 
         saveUserToDatabase(updatedUser);
+        createNewRecentActivityDocument(recentActivityData);
     };
 
     const handleOpenEditModal = (vehicle) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { createNewUserDocument } from '../../../utils/firebase/firebase.utils';
+import { createNewUserDocument, createNewRecentActivityDocument } from '../../../utils/firebase/firebase.utils';
 import { getRenewalDate } from '../../../utils/helpers/user-helpers.utils';
 import {subscriptionPrices } from '../../../utils/helpers/subscription.utils';
 
@@ -49,6 +49,7 @@ const NewUser = () => {
         const userId = uuidv4();
         const purchaseId = uuidv4();
         const vehicleId = uuidv4();
+        const activityId = uuidv4();
 
         const currentDate = new Date();
 
@@ -79,9 +80,18 @@ const NewUser = () => {
             registrationDate: currentDate,
             purchaseHistory: [purchaseHistory]
         };
+
+        const recentActivityData = {
+            id: activityId,
+            userId: userId,
+            userName: userData.name,
+            timestamp: currentDate,
+            action: "New User"
+        };
         
         try {
             await createNewUserDocument(userData);
+            await createNewRecentActivityDocument(recentActivityData);
             setIsUserCreatedSuccess(true);
             resetFormFields();
         } catch (error) {

@@ -31,14 +31,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
-export const auth = getAuth();
+export const auth = getAuth(firebaseApp);
 
-export const db = getFirestore();
+export const db = getFirestore(firebaseApp);
 
 export const createNewUserDocument = async (userInformation) => {
     const newUserCollectionRef = collection(db, 'users');
-
-    //TODO: may need to check if user exists...
 
     /** @type {User} */
     const userData = {
@@ -123,4 +121,56 @@ export const fetchUserDocumentById = async (userId) => {
     }
 
     return null;
+};
+
+export const createNewRecentActivityDocument = async (activityInformation) => {
+    const newActivityCollectionRef = collection(db, 'activities');
+
+    const activityData = {
+        ...activityInformation
+    }
+
+    try {
+        const docRef = await addDoc(newActivityCollectionRef, activityData)
+        return docRef;
+    } catch (error) {
+        console.log('error creating new activity', error.message);
+    }
+};
+
+export const fetchAllRecentActivities = async() => {
+    try {
+        const activitiesCollectionRef = collection(db, 'activities');
+        const querySnapshot = await getDocs(activitiesCollectionRef);
+
+        const activities = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+
+            return {
+                id: doc.id,
+                action: data.action || 'Unknown',
+                userId: data.userId || '',
+                userName: data.userName || 'Anonymous',
+                timestamp: data.timestamp?.toDate() || null
+            };
+        });
+
+        console.log("Activity in firebase: ", activities);
+
+        // Sort by most recent date
+        const sortedActivities = activities.sort((activityA, activityB) => {
+            const timeA = activityA.timestamp || new Date(0);
+            const timeB = activityB.timestamp || new Date(0);
+
+            if (timeA > timeB) return -1; // A comes before B
+            if (timeA < timeB) return 1;  // B comes before A
+            return 0; // They are the same
+        });
+
+        console.log(sortedActivities);
+        return sortedActivities;
+    } catch (error) {
+        console.error('Error fetching activities: ', error);
+        return [];
+    }
 };
