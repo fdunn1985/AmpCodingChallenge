@@ -18,23 +18,6 @@ const Dashboard = () => {
     const [viewAllActivities, setViewAllActivities] = useState(false);
 
     const navigate = useNavigate();
-
-    // Mock data for quick stats
-    const stats = {
-        totalUsers: 101,
-        activeSubscriptions: 87,
-        overdueAccounts: 25,
-        recentCalls: 14
-    };
-    
-    // Mock data for recent activities
-    const recentActivities = [
-        { id: 1, action: 'Account Update', user: 'John Smith', time: '10 minutes ago' },
-        { id: 2, action: 'Subscription Transfer', user: 'Emily Johnson', time: '25 minutes ago' },
-        { id: 3, action: 'Account Cancellation', user: 'Michael Brown', time: '1 hour ago' },
-        { id: 4, action: 'Payment Update', user: 'Sarah Wilson', time: '2 hours ago' },
-        { id: 5, action: 'New Registration', user: 'David Taylor', time: '3 hours ago' },
-    ];
     
     const handleSearch = (event) => {
         event.preventDefault();
@@ -163,7 +146,6 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Can be broken into a separate stats component? */}
                 <div className="stats-container">
                     <StatsCard header="Total Users" value={userCount} />
                     <StatsCard header="Active Subscriptions" value={activeCount} />
