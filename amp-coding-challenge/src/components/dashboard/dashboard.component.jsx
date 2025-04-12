@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
+import StatsCard from '../stats-card/stats-card.component';
+
+import { fetchAllUsers } from '../../utils/firebase/firebase.utils';
 
 import './dashboard.styles.scss';
 
 const Dashboard = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [userCount, setUserCount] = useState(0);
+    const [activeCount, setActiveCount] = useState(0);
+    const [overdueCount, setOverdueCount] = useState(0);
+    const [recentCallCount, setRecentCallCount] = useState(0);
 
     // Mock data for quick stats
     const stats = {
@@ -32,6 +40,56 @@ const Dashboard = () => {
         }
     };
 
+    const FetchUsers = async () => {
+        try {
+            return await fetchAllUsers();
+        } catch (error) {
+            console.error('Error creating user:', error);
+            return [];
+        }
+    }
+
+    // fetch users
+        useEffect(() => {
+            const getUsers = async () => {
+                const data = await FetchUsers();
+    
+                const count = data.length;
+                setUserCount(count);
+
+                const activeUsers = data.filter(user => user.status === 'Active');
+                setActiveCount(activeUsers.length);
+
+                const overdueUsers = data.filter(user => user.status === 'Overdue');
+                setOverdueCount(overdueUsers.length);
+
+                let callCount = 0;
+                const now = new Date();
+                const fourHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+                
+                data.forEach(user => {
+                    if (user.purchaseHistory.length != 0) {
+                        const hasRecentPurcahse = user.purchaseHistory.some(purchase => {
+                            const purchaseDate = purchase.date instanceof Date
+                                ? purchase.date
+                                : purchase.date?.toDate?.();
+                            
+                                return purchaseDate && purchaseDate >= fourHoursAgo;
+                        });
+
+                        if (hasRecentPurcahse) {
+                            callCount++;
+                        }
+                    }
+                });
+
+                setRecentCallCount(callCount);
+            }
+    
+            getUsers();
+        }, []);
+    
+
     return (
         <div className="dashboard-container">
             <div className="dashboard-content">
@@ -53,22 +111,10 @@ const Dashboard = () => {
 
                 {/* Can be broken into a separate stats component? */}
                 <div className="stats-container">
-                    <div className="stats-card">
-                        <h3>Total Users</h3>
-                        <p>{stats.totalUsers}</p>
-                    </div>
-                    <div className="stats-card">
-                        <h3>Active Subscriptions</h3>
-                        <p>{stats.activeSubscriptions}</p>
-                    </div>
-                    <div className="stats-card">
-                        <h3>Overdue Accounts</h3>
-                        <p>{stats.overdueAccounts}</p>
-                    </div>
-                    <div className="stats-card">
-                        <h3>Recent Calls</h3>
-                        <p>{stats.recentCalls}</p>
-                    </div>
+                    <StatsCard header="Total Users" value={userCount} />
+                    <StatsCard header="Active Subscriptions" value={activeCount} />
+                    <StatsCard header="Overdue Accounts" value={overdueCount} />
+                    <StatsCard header="Recent Calls" value={recentCallCount} />
                 </div>
 
                 <div className="dashboard-sections">
