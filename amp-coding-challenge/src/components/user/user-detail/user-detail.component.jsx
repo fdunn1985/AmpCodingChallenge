@@ -68,12 +68,13 @@ const UserDetail = () => {
     // save method
     const saveUserToDatabase = async(updatedUser, errorMessage="Failed to update user in database.") => {
         try {
+            updatedUser.status = determineUserStatus(updatedUser.vehicles);
             await updateUserDocument(updatedUser);
             setUser(updatedUser);
         } catch (error) {
             console.error(errorMessage, error);
         }
-    }
+    };
 
     // ===== HANDLERS =====
     const handleEditToggle = () => {

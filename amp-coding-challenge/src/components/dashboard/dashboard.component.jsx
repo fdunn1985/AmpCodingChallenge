@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import StatsCard from '../stats-card/stats-card.component';
 
@@ -14,6 +14,8 @@ const Dashboard = () => {
     const [activeCount, setActiveCount] = useState(0);
     const [overdueCount, setOverdueCount] = useState(0);
     const [recentCallCount, setRecentCallCount] = useState(0);
+
+    const navigate = useNavigate();
 
     // Mock data for quick stats
     const stats = {
@@ -36,7 +38,7 @@ const Dashboard = () => {
         event.preventDefault();
         if (searchQuery.trim()) {
             // TODO
-            // navigate(`/users?search=${searchQuery}`);
+            navigate(`/userList?search=${searchQuery}`);
         }
     };
 

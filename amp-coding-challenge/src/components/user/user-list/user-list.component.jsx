@@ -51,23 +51,19 @@ const UserList = () => {
 
             setRawUsers(userUpdatedStatus);
             setUsers(userUpdatedStatus);
-
-            // filter by params passed in for either user or status
-            const queryParams = new URLSearchParams(location.search);
-            const statusParam = queryParams.get('status') || '';
-            const searchParam = queryParams.get('search') || '';
-
-            if (statusParam) {
-                setStatusFilter(statusParam);
-            }
-    
-            if (searchParam) {
-                setSearchQuery(searchParam);
-            }
         }
 
         getUsers();
     }, []);
+
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const statusParam = queryParams.get('status') || '';
+        const searchParam = queryParams.get('search') || '';
+    
+        if (statusParam) setStatusFilter(statusParam);
+        if (searchParam) setSearchQuery(searchParam);
+    }, [location.search]);
 
     // real time filtering of users
     useEffect(() => {
@@ -99,7 +95,7 @@ const UserList = () => {
         });
         
         setUsers(filteredUsers);
-    }, [searchQuery, statusFilter, subscriptionFilter, sortOrder]);
+    }, [searchQuery, statusFilter, subscriptionFilter, sortOrder, rawUsers]);
 
     const handleSearch = (event) => {
         event.preventDefault();
