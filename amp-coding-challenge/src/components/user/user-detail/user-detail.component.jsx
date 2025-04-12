@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
+import VehicleCard from '../../vehicle-card/vehicle-card.component';
+
 import { fetchUserById, updateUserDocument } from '../../../utils/firebase/firebase.utils';
 import { determineUserStatus, getRenewalDate } from '../../../utils/helpers/user-helpers.utils';
 import {subscriptionPrices } from '../../../utils/helpers/subscription.utils';
@@ -127,7 +129,7 @@ const UserDetail = () => {
 
     const handleCancelSubscription = (veh) => {
 
-        if (veh.subscription.status != 'Cancelled') {
+        if (veh.subscription.status !== 'Cancelled') {
             const updatedVehicles = user.vehicles.map(vehicle => 
                 vehicle.id === veh.id ? {
                     ...vehicle,
@@ -221,7 +223,7 @@ const UserDetail = () => {
             return;
         }
 
-        const destVehicleIndex = updatedUser.vehicles.findIndex(v => v.id == destinationVehicle.id);
+        const destVehicleIndex = updatedUser.vehicles.findIndex(v => v.id === destinationVehicle.id);
 
         if (destVehicleIndex === -1) {
             alert("Destination vehicle not found");
@@ -509,56 +511,12 @@ const UserDetail = () => {
                                 </div>
 
                                 {user.vehicles.map(vehicle => (
-                                    <div className="vehicle-card" key={vehicle.id}>
-                                        <div className="vehicle-info">
-                                            <h3>{vehicle.year} {vehicle.make} {vehicle.model}</h3>
-                                            <p>License Plate: {vehicle.licensePlate}</p>
-                                        </div>
-
-                                        <div className="subscription-info">
-                                            <h4>Subscription Details</h4>
-                                            <div className="subscription-details">
-                                                <div className="detail-item">
-                                                    <label>Type:</label>
-                                                    <span>{vehicle.subscription.type}</span>
-                                                </div>
-                                                <div className="detail-item">
-                                                    <label>Status:</label>
-                                                    <span className={`status-text ${vehicle.subscription?.status?.toLowerCase() || ''}`}>
-                                                        {vehicle.subscription.status}
-                                                    </span>
-                                                </div>
-                                                <div className="detail-item">
-                                                    <label>Start Date:</label>
-                                                    <span>
-                                                        {vehicle.subscription?.startDate instanceof Date
-                                                            ? vehicle.subscription.startDate.toLocaleString()
-                                                            : vehicle.subscription?.startDate?.toDate?.().toLocaleString() || ''}
-                                                    </span>
-                                                </div>
-                                                <div className="detail-item">
-                                                    <label>Renewal Date:</label>
-                                                    <span>
-                                                        {vehicle.subscription?.renewalDate instanceof Date
-                                                            ? vehicle.subscription.renewalDate.toLocaleString()
-                                                            : vehicle.subscription?.renewalDate?.toDate?.().toLocaleString() || ''}
-                                                    </span>
-                                                </div>
-                                                <div className="detail-item">
-                                                    <label>Renewal Price:</label>
-                                                    <span>
-                                                    ${parseFloat(vehicle.subscription.renewalPrice).toFixed(2)}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="vehicle-actions">
-                                            <button className="edit-vehicle-button" onClick={() => handleOpenEditModal(vehicle)}>Edit Vehicle</button>
-                                            <button className="transfer-subscription-button" onClick={() => handleOpenTransferModal(vehicle)}>Transfer Subscription</button>
-                                            <button className="cancel-subscription-button" onClick={() => handleCancelSubscription(vehicle)}>Cancel Subscription</button>
-                                        </div>
-                                    </div>
+                                    <VehicleCard 
+                                        vehicle={vehicle}
+                                        onEdit={() => handleOpenEditModal(vehicle)}
+                                        onTransfer={() => handleOpenTransferModal(vehicle)}
+                                        onCancel={() => handleCancelSubscription(vehicle)}
+                                    />
                                 ))}
                             </div>
 
@@ -926,7 +884,7 @@ const UserDetail = () => {
                                                 <button
                                                     type="submit"
                                                     className="submit-button"
-                                                    disabled={!destinationVehicle || user.vehicles.filter(v => v.id != selectedVehicle.id).length === 0}
+                                                    disabled={!destinationVehicle || user.vehicles.filter(v => v.id !== selectedVehicle.id).length === 0}
                                                 >
                                                     Transfer Subscription
                                                 </button>
