@@ -21,6 +21,8 @@
     .navbar-logo {
         height: 100%;
         align-items: center;
+        display: flex;
+        align-items: center;
 
         .logo {
             height: 100%;
@@ -106,9 +108,12 @@
                 font-weight: 500;
                 color: #333;
 
-                // Hide username text on smaller screens
-                @media (max-width: 768px) {
-                    display: none;
+                @media (max-width: 480px) {
+                    font-size: 0.75rem;
+                    max-width: 100px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
