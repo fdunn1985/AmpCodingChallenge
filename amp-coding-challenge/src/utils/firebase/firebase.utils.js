@@ -17,15 +17,15 @@ import {
     doc
 } from 'firebase/firestore';
 
-// Your web app's Firebase configuration
+// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAz3dZmR0f8E1necsFj1kG2XZUtqcKtjQU",
-  authDomain: "amp-coding-challenge.firebaseapp.com",
-  projectId: "amp-coding-challenge",
-  storageBucket: "amp-coding-challenge.firebasestorage.app",
-  messagingSenderId: "704570431457",
-  appId: "1:704570431457:web:514512a4f7be3f372c24a0",
-  measurementId: "G-MEFGC6VL9G"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
