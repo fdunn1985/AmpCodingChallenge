@@ -85,6 +85,63 @@
                 color: #019f01;
                 font-weight: 500;
             }
+
+            .form-actions {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 1rem;
+
+                .left-actions,
+                .right-actions {
+                    display: flex;
+                    gap: 10px;
+                }
+
+                @media (max-width: 768px) {
+                    flex-direction: column-reverse;
+                    align-items: stretch;
+
+                    .left-actions,
+                    .right-actions {
+                        width: 100%;
+                        justify-content: center;
+                    }
+                } 
+
+                button {
+                    padding: 8px 15px;
+                    border-radius: 4px;
+                    font-weight: 500;
+                    cursor: pointer;
+        
+                    @media (max-width: 768px) {
+                        flex: 1;
+                    }
+                }
+
+                .submit-button {
+                    background-color: #0066cc;
+                    color: white;
+                    border: none;
+    
+                    &:hover {
+                        background-color: #0055aa;
+                    }
+                }
+
+                .cancel-button {
+                    background-color: transparent;
+                    color: #555555;
+                    border: 1px solid #dddddd;
+        
+                    &:hover {
+                        background-color: #f1f1f1;
+                    }
+                }
+            }
+
+            
         }
     }
 }

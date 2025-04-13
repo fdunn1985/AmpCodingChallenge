@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 import { createNewUserDocument, createNewRecentActivityDocument } from '../../../utils/firebase/firebase.utils';
 import { getRenewalDate } from '../../../utils/helpers/user-helpers.utils';
@@ -42,6 +43,8 @@ const NewUser = () => {
         setVehicle(defaultVehicleFields);
         setSubscription(defaultSubscriptionFields);
     }
+
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -96,6 +99,11 @@ const NewUser = () => {
             resetFormFields();
         } catch (error) {
             console.error('Error creating user:', error);
+        } finally {
+            const action = event.nativeEvent.submitter?.value;
+            if (action === 'saveAndRedirect') {
+                navigate(`/userDetail/${userId}`);
+            }
         }
     };
 
@@ -290,9 +298,19 @@ const NewUser = () => {
                         </div>
                     </div>
                     <div className="form-actions">
-                        <button type="submit" className="submit-button">
-                        Create User
-                        </button>
+                        <div className="left-actions">
+                            <button type="button" className="cancel-button" onClick={() => navigate(-1)}>
+                                Cancel
+                            </button>
+                        </div>
+                        <div className="right-actions">
+                            <button type="submit" className="submit-button" name="action" value="save">
+                            Save
+                            </button>
+                            <button type="submit" className="submit-button" name="action" value="saveAndRedirect">
+                            Save & View
+                            </button>
+                        </div>
                     </div>
                     {isUserCreatedSuccess && (
                         <>
