@@ -133,7 +133,7 @@ const UserList = () => {
                                     <option value="All">All</option>
                                     <option value="Active">Active</option>
                                     <option value="Overdue">Overdue</option>
-                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Inactive">Inactive</option>
                                 </select>
                             </div>
 

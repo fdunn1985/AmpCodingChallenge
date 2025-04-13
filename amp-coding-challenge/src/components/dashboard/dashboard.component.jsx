@@ -133,7 +133,7 @@ const Dashboard = () => {
 
                 {/* Can be separated into a header container? */}
                 <div className="dashboard-header">
-                    <h1>AMP CSR Dashboard</h1>
+                    <h1>CSR Dashboard</h1>
                     <div className="search">
                         <form onSubmit={handleSearch}>
                             <input 

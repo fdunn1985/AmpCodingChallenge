@@ -1,7 +1,4 @@
 .navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 0 20px;
@@ -133,4 +130,14 @@
             right: 20px;
         }
     }
+}
+
+
+.navbar-content {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
 }
