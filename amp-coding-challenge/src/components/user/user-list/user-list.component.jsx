@@ -82,7 +82,11 @@ const UserList = () => {
         }
 
         if (subscriptionFilter !== 'All') {
-            filteredUsers = filteredUsers.filter(user => user.subscription.type === subscriptionFilter);
+            filteredUsers = filteredUsers.filter(user => 
+                user.vehicles &&
+                user.vehicles.length > 0 &&
+                user.vehicles[0].subscription &&
+                user.vehicles[0].subscription.type === subscriptionFilter);
         }
 
         filteredUsers.sort((a, b) => {
