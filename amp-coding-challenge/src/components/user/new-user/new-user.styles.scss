@@ -11,13 +11,37 @@
 
         .new-user-header {
             display: flex;
-            align-items: center;
+            flex-direction: column;
             margin-bottom: 30px;
         
             h1 {
                 font-size: 1.8rem;
                 font-weight: 600;
                 color: #333333;
+            }
+
+            .top-header {
+                display: flex;
+                align-items: flex-start;
+
+                .back-button {
+                    padding: 8px 15px;
+                    background-color: transparent;
+                    color: #555555;
+                    border: 1px solid #dddddd;
+                    border-radius: 4px;
+                    font-weight: 500;
+                    cursor: pointer;
+    
+                    &:hover {
+                        background-color: #f1f1f1;
+                    }
+                }
+            }
+
+            .bottom-header {
+                display: flex;
+                align-items: center;
             }
         }
 
@@ -121,6 +145,16 @@
                 }
 
                 .submit-button {
+                    background-color: #e3f2fd;
+                        color: #1976d2;
+                        border: 1px solid #bbdefb;
+    
+                        &:hover {
+                            background-color: #c5d2dc;
+                        }
+                }
+
+                .submit-view-button {
                     background-color: #0066cc;
                     color: white;
                     border: none;
@@ -131,13 +165,13 @@
                 }
 
                 .cancel-button {
-                    background-color: transparent;
-                    color: #555555;
-                    border: 1px solid #dddddd;
-        
-                    &:hover {
-                        background-color: #f1f1f1;
-                    }
+                    background-color: #f0f0f0;
+                        color: #555555;
+                        border: 1px solid #dddddd;
+
+                        &:hover {
+                            background-color: #bebebe;
+                        }
                 }
             }
 

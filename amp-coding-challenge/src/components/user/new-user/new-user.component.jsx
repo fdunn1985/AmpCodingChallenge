@@ -135,7 +135,14 @@ const NewUser = () => {
         <div className="new-user-container">
             <div className="new-user-content">
                 <div className="new-user-header">
-                    <h1>Create New User</h1>
+                    <div className="top-header">
+                        <button className="back-button" onClick={() => navigate(-1)}>
+                            &larr; Back
+                        </button>
+                    </div>
+                    <div className="bottom-header">
+                        <h1>Create New User</h1>
+                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit} className="new-user-form">
@@ -307,7 +314,7 @@ const NewUser = () => {
                             <button type="submit" className="submit-button" name="action" value="save">
                             Save
                             </button>
-                            <button type="submit" className="submit-button" name="action" value="saveAndRedirect">
+                            <button type="submit" className="submit-view-button" name="action" value="saveAndRedirect">
                             Save & View
                             </button>
                         </div>

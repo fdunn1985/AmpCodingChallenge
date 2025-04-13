@@ -125,26 +125,30 @@ const UserList = () => {
                             />
                             <button type="submit">Search</button>
                         </form>
+                        <div className="filters-and-button">
+                            <div className="filters">
+                                <div className="filter">
+                                    <label>Status:</label>
+                                    <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                                        <option value="All">All</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Overdue">Overdue</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
 
-                        <div className="filters">
-                            <div className="filter">
-                                <label>Status:</label>
-                                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-                                    <option value="All">All</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Overdue">Overdue</option>
-                                    <option value="Inactive">Inactive</option>
-                                </select>
+                                <div className="filter">
+                                    <label>Subscription:</label>
+                                    <select value={subscriptionFilter} onChange={(e) => setSubscriptionFilter(e.target.value)}>
+                                        <option value="All">All</option>
+                                        <option value="Basic">Basic</option>
+                                        <option value="Premium">Premium</option>
+                                        <option value="Ultimate">Ultimate</option>
+                                    </select>
+                                </div>
                             </div>
-
-                            <div className="filter">
-                                <label>Subscription:</label>
-                                <select value={subscriptionFilter} onChange={(e) => setSubscriptionFilter(e.target.value)}>
-                                    <option value="All">All</option>
-                                    <option value="Basic">Basic</option>
-                                    <option value="Premium">Premium</option>
-                                    <option value="Ultimate">Ultimate</option>
-                                </select>
+                            <div className="create-new-user">
+                                <button className="new-user-button" onClick={() => navigate('/newUser')}>Create New User</button>
                             </div>
                         </div>
                     </div>

@@ -67,6 +67,39 @@
                     }
                 }
 
+                .filters-and-button {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    gap: 20px;
+                    flex-wrap: wrap;
+
+                    @media (max-width: 768px) {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+                }
+
+                .create-new-user {
+                    .new-user-button {
+                        padding: 10px 20px;
+                        background-color: #e3f2fd;
+                        color: #1976d2;
+                        border: 1px solid #bbdefb;
+                        border-radius: 4px;
+                        font-weight: 500;
+                        cursor: pointer;
+
+                        @media (max-width: 768px) {
+                            width: 100%;
+                        }
+
+                        &:hover {
+                            background-color: #c5d2dc;
+                        }
+                    }
+                }
+
                 .filters {
                     display: flex;
                     gap: 20px;
