@@ -1,5 +1,5 @@
-import { Fragment, useState } from 'react';
-import { Outlet, Link } from 'react-router-dom';
+import { Fragment, useState, useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import {ReactComponent as AmpLogo} from '../../assets/AMP_Logo.svg';
 
 import './navigation.styles.scss';
@@ -7,7 +7,12 @@ import './navigation.styles.scss';
 const Navigation = () => {
 
     const [menuOpen, setMenuOpen] = useState(false);
+    const location = useLocation();
     
+    useEffect(() => {
+        setMenuOpen(false);
+    }, [location]);
+
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
@@ -28,7 +33,7 @@ const Navigation = () => {
                         onClick={toggleMenu}
                         aria-label="Toggle navigation menu"
                     >
-                        ☰
+                        {menuOpen ? 'X' : '☰' }
                     </button>
 
                     <div className={`navbar-menu ${menuOpen ? 'open' : ''}`}>

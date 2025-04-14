@@ -14,8 +14,8 @@
     
     // On very small screens, adjust height and stack items if needed
     @media (max-width: 480px) {
-        height: auto;
-        padding: 10px;
+        height: 60px;
+        padding: 0 10px;
     }
   
     .navbar-logo {
@@ -39,6 +39,10 @@
     .navbar-menu {
         display: flex;
         gap: 10px;
+
+        &.open {
+            z-index: 1001;
+        }
 
         // On smaller screens, reduce the gap between links
         @media (max-width: 768px) {
@@ -100,6 +104,10 @@
         align-items: center;
         gap: 15px;
 
+        @media(max-width: 480px) {
+            margin-right: 50px;
+        }
+
         .user-info {
             text-align: right;
 
@@ -108,11 +116,12 @@
                 color: #333;
 
                 @media (max-width: 480px) {
-                    font-size: 0.75rem;
-                    max-width: 100px;
+                    font-size: 0.8rem;
+                    max-width: 80px;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    display: block;
                 }
             }
         }
@@ -131,7 +140,12 @@
         @media (max-width: 480px) {
             display: block;
             position: absolute;
-            right: 20px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     }
 }
@@ -145,4 +159,8 @@
     justify-content: space-between;
     height: 100%;
     padding: 30px;
+
+    @media (max-width: 768px) {
+        padding: 0 10px;
+    }
 }
